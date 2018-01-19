@@ -64,5 +64,4 @@ var Pixboost = {
       el.appendChild(pic);
     });
   }
-
 };
