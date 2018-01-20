@@ -1,0 +1,28 @@
+{
+  "name": "pixboost-js",
+  "version": "1.0.0",
+  "description": "Library to integrate Pixbost service into web applications",
+  "main": "pixboost.js",
+  "scripts": {
+    "test": "mocha ./test/*.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pixboost/pixboost-js.git"
+  },
+  "keywords": [
+    "pixboost",
+    "image",
+    "manipulations"
+  ],
+  "author": "Pixboost",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Pixboost/pixboost-js/issues"
+  },
+  "homepage": "https://github.com/Pixboost/pixboost-js#readme",
+  "devDependencies": {
+    "jsdom": "^11.5.1",
+    "mocha": "^5.0.0"
+  }
+}
