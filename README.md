@@ -5,10 +5,10 @@ can directly modify DOM.
 
 ## Usage
 
-Library will add <picture> tag to all elements that marked with data-pb-picture attribute.
-Picture tag will include images for different CSS breakpoints.
+Library inserts <picture> tags to all elements that marked with data-pb-picture attribute.
+Picture tag will include sources (images) for different CSS breakpoints.
 
-For instance, for element below:
+For instance, for this element:
 
 ```html
 <div data-pb-picture
@@ -22,7 +22,13 @@ For instance, for element below:
     data-pb-sm-params="size=100x100"/>
 ```
 
-generated `<picture>` tag will be:
+when you run picture() function from the library: 
+
+```js
+    window.Pixboost.picture({apiKey: 'API_KEY'})
+```
+
+then inserted `<picture>` tag will be:
 
 ```html
 <picture>
@@ -36,7 +42,7 @@ generated `<picture>` tag will be:
 </picture>
 ```
 
-Operations (data-pb-<BREAKPOINT> attribute):
+Operations (`data-pb-<BREAKPOINT>` attribute):
 
 * optimise
 * resize
@@ -46,15 +52,15 @@ Operations (data-pb-<BREAKPOINT> attribute):
 
 See more about operations [here](https://pixboost.com/docs/api/).
 
-data-pb-<BREAKPOINT>-params is a query param string that will be passed to the URL.
+`data-pb-<BREAKPOINT>-params` is a query param string that will be passed to the URL.
 
 ## Supporting Breakpoints
 
-* Small devices (576px and down)
+* _sm_ - Small devices (576px and down)
   `@media (max-width: 576px)`
 
-* Medium devices (tablets, 768px and down)
+* _md_ - Medium devices (tablets, 768px and down)
   `@media (max-width: 992px)`
 
-* Large devices (desktops, 993px and up)
+* _lg_ - Large devices (desktops, 993px and up)
   `@media (min-width: 993px)`
