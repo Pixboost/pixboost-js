@@ -1,6 +1,6 @@
 'use strict';
 
-var _window = global ? global.window : window;
+var _window = typeof global !== 'undefined' ? global.window : window;
 
 _window.Pixboost = {
   _BREAKPOINTS: [
