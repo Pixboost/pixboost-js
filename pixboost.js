@@ -2,20 +2,6 @@
 
 var _window = typeof global !== 'undefined' ? global.window : window;
 
-if (typeof _window.document !== 'undefined') {
-  _window.document.addEventListener('DOMContentLoaded', function() {
-    var scriptTag = _window.document.getElementById('pb-script');
-    if (typeof scriptTag !== 'undefined') {
-      var autoload = scriptTag.hasAttribute('data-autoload');
-      var apiKey = scriptTag.getAttribute('data-api-key');
-
-      if (autoload && apiKey) {
-        _window.Pixboost.picture({apiKey: apiKey});
-      }
-    }
-  });
-}
-
 _window.Pixboost = {
   _BREAKPOINTS: [
     {
@@ -32,6 +18,30 @@ _window.Pixboost = {
     }
   ],
 
+  _apiKey: '',
+
+  init: function () {
+    var scriptTag = _window.document.getElementById('pb-script');
+    if (typeof scriptTag !== 'undefined' && scriptTag) {
+      var autoload = scriptTag.hasAttribute('data-autoload');
+      var apiKey = scriptTag.getAttribute('data-api-key');
+
+      if (apiKey) {
+        _window.Pixboost._apiKey = apiKey;
+      }
+
+      if (autoload) {
+        _window.Pixboost.picture({apiKey: apiKey});
+      }
+
+      _window.document.addEventListener('pbUpdate', function(e) {
+        _window.Pixboost.picture({
+          apiKey: e.detail ? e.detail.apiKey : undefined
+        });
+      });
+    }
+  },
+
   /**
    * Generates <picture> tag into all tags that have
    * data-pb-picture attribute.
@@ -41,8 +51,9 @@ _window.Pixboost = {
    */
   picture: function (options) {
     var self = this;
+    options = options || {};
 
-    var apiKey = options.apiKey;
+    var apiKey = options.apiKey || _window.Pixboost._apiKey;
     if (!apiKey) {
       throw 'apiKey option is mandatory';
     }
@@ -55,7 +66,7 @@ _window.Pixboost = {
     var createSource = function (mediaQuery, src, op, params) {
       var
         el = doc.createElement('source'),
-        srcSetVal = 'https://pixboost.com/api/2/img/' + src + '/' + op + '?auth=' + options.apiKey;
+        srcSetVal = 'https://pixboost.com/api/2/img/' + src + '/' + op + '?auth=' + apiKey;
       if (params) {
         srcSetVal += '&' + params;
       }
@@ -82,7 +93,15 @@ _window.Pixboost = {
       imgEl.setAttribute('src', el.getAttribute('data-pb-lg-url'));
       pic.appendChild(imgEl);
 
-      el.appendChild(pic);
+      el.parentNode.replaceChild(pic, el);
     });
   }
 };
+
+if (typeof _window.document !== 'undefined') {
+  if (_window.document.readyState === 'interactive') {
+    _window.Pixboost.init();
+  } else {
+    _window.document.addEventListener('DOMContentLoaded', _window.Pixboost.init);
+  }
+}
