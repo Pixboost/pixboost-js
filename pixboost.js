@@ -2,6 +2,20 @@
 
 var _window = typeof global !== 'undefined' ? global.window : window;
 
+if (typeof _window.document !== 'undefined') {
+  _window.document.addEventListener('DOMContentLoaded', function() {
+    var scriptTag = _window.document.getElementById('pb-script');
+    if (typeof scriptTag !== 'undefined') {
+      var autoload = scriptTag.hasAttribute('data-autoload');
+      var apiKey = scriptTag.getAttribute('data-api-key');
+
+      if (autoload && apiKey) {
+        _window.Pixboost.picture({apiKey: apiKey});
+      }
+    }
+  });
+}
+
 _window.Pixboost = {
   _BREAKPOINTS: [
     {
