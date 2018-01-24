@@ -83,11 +83,11 @@ document.dispatchEvent(new CustomEvent('pbUpdate'));
 
 ## Supporting Breakpoints
 
-* _sm_ - Small devices (576px and down)
-  `@media (max-width: 576px)`
 
-* _md_ - Medium devices (tablets, 768px and down)
+* _lg_ - Large devices (desktops, 990px and up)
+  `@media (min-width: 990px)`
+
+* _md_ - Medium devices (tablets, 640px and up)
   `@media (max-width: 992px)`
 
-* _lg_ - Large devices (desktops, 993px and up)
-  `@media (min-width: 993px)`
+* _sm_ - Small devices - everything below tablets

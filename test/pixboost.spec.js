@@ -11,18 +11,13 @@ const testCases = () => {
 
   [
     {
-      name: 'sm',
-      mediaQuery: '(max-width: 576px)',
-      srcset: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?auth=123&size=100x100'
-    },
-    {
       name: 'md',
-      mediaQuery: '(max-width: 768px)',
+      mediaQuery: '(min-width: 640px)',
       srcset: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?auth=123&size=300'
     },
     {
       name: 'lg',
-      mediaQuery: '(min-width: 769px)',
+      mediaQuery: '(min-width: 990px)',
       srcset: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123'
     }
   ].forEach((b) => {
@@ -33,10 +28,10 @@ const testCases = () => {
     });
   });
 
-  it('should contain <img> fallback that points to the desktop image', () => {
+  it('should contain <img> that points to the small breakpoint', () => {
     const img = global.window.document.querySelectorAll(`img`);
     assert.equal(img.length, 1);
-    assert.equal(img[0].getAttribute('src'), 'https://yoursite.com/doggy-lg.png');
+    assert.equal(img[0].getAttribute('src'), 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?auth=123&size=100x100');
   });
 };
 
@@ -66,9 +61,8 @@ describe('Pixboost JS', function () {
   });
 
   describe('when dispatch pbUpdate event', () => {
-    let dom;
     beforeEach(async () => {
-      dom = await jsdom.JSDOM.fromFile('./test/test-init.html', {virtualConsole});
+      const dom = await jsdom.JSDOM.fromFile('./test/test-init.html', {virtualConsole});
       global.window.document = dom.window.document;
       pixboost.init();
       global.window.document.dispatchEvent(new dom.window.CustomEvent('pbUpdate'));
@@ -78,9 +72,8 @@ describe('Pixboost JS', function () {
   });
 
   describe('when autoload is turned on', () => {
-    let dom;
     beforeEach(async () => {
-      dom = await jsdom.JSDOM.fromFile('./test/test-autoload.html', {virtualConsole});
+      const dom = await jsdom.JSDOM.fromFile('./test/test-autoload.html', {virtualConsole});
       global.window.document = dom.window.document;
       pixboost.init();
     });

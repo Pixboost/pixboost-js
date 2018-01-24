@@ -5,16 +5,15 @@ var _window = typeof global !== 'undefined' ? global.window : window;
 _window.Pixboost = {
   _BREAKPOINTS: [
     {
-      name: 'sm',
-      mediaQuery: '(max-width: 576px)'
+      name: 'lg',
+      mediaQuery: '(min-width: 990px)'
     },
     {
       name: 'md',
-      mediaQuery: '(max-width: 768px)'
+      mediaQuery: '(min-width: 640px)'
     },
     {
-      name: 'lg',
-      mediaQuery: '(min-width: 769px)'
+      name: 'sm'
     }
   ],
 
@@ -70,15 +69,19 @@ _window.Pixboost = {
       throw 'apiKey option is mandatory';
     }
 
-    var createSource = function (mediaQuery, src, op, params) {
-      var
-        el = doc.createElement('source'),
-        srcSetVal = 'https://pixboost.com/api/2/img/' + src + '/' + op + '?auth=' + apiKey;
+    var pixboostUrl = function (src, op, params) {
+      var url = 'https://pixboost.com/api/2/img/' + src + '/' + op + '?auth=' + apiKey;
       if (params) {
-        srcSetVal += '&' + params;
+        url += '&' + params;
       }
 
-      el.setAttribute('srcset', srcSetVal);
+      return url;
+    };
+
+    var createSource = function (mediaQuery, src, op, params) {
+      var el = doc.createElement('source');
+
+      el.setAttribute('srcset', pixboostUrl(src, op, params));
       el.setAttribute('media', mediaQuery);
 
       return el;
@@ -87,18 +90,21 @@ _window.Pixboost = {
     doc.querySelectorAll('[data-pb-picture]').forEach(function (el) {
       var pic = doc.createElement('picture');
 
-      self._BREAKPOINTS.forEach(function (bp) {
+      self._BREAKPOINTS.forEach(function (bp, idx) {
         var
           attrUrl = el.getAttribute('data-pb-' + bp.name + '-url'),
           attrOp = el.getAttribute('data-pb-' + bp.name),
-          attrOpParams = el.getAttribute('data-pb-' + bp.name + '-params');
+          attrOpParams = el.getAttribute('data-pb-' + bp.name + '-params'),
+          isLast = idx === self._BREAKPOINTS.length - 1;
 
-        pic.appendChild(createSource(bp.mediaQuery, attrUrl, attrOp, attrOpParams));
+        if (isLast) {
+          var imgEl = doc.createElement('img');
+          imgEl.setAttribute('src', pixboostUrl(attrUrl, attrOp, attrOpParams));
+          pic.appendChild(imgEl);
+        } else {
+          pic.appendChild(createSource(bp.mediaQuery, attrUrl, attrOp, attrOpParams));
+        }
       });
-
-      var imgEl = doc.createElement('img');
-      imgEl.setAttribute('src', el.getAttribute('data-pb-lg-url'));
-      pic.appendChild(imgEl);
 
       el.parentNode.replaceChild(pic, el);
     });
