@@ -5,8 +5,14 @@ can directly modify DOM.
 
 ## Usage
 
-Library inserts <picture> tags to all elements that marked with data-pb-picture attribute.
-Picture tag will include sources (images) for different CSS breakpoints.
+You need to include library on your page:
+
+```html
+<script type="text/javascript" src="https://pixboost.com/libs/pixboost.js"></script> 
+```
+
+Library replaces all elements that marked with data-pb-picture attribute with `<picture>` tag.
+Picture tag will include different sources (images) for different CSS breakpoints.
 
 For instance, for this element:
 
@@ -53,6 +59,27 @@ Operations (`data-pb-<BREAKPOINT>` attribute):
 See more about operations [here](https://pixboost.com/docs/api/).
 
 `data-pb-<BREAKPOINT>-params` is a query param string that will be passed to the URL.
+
+### Replacing on document load
+
+You can turn on automatic replacement by setting up `<script>` tag:
+
+```html
+    <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
+        id="pb-script" 
+        data-api-key="API_KEY"
+        data-autoload></script>
+```
+
+### Reloading
+
+If you are fetching content using AJAX then you might want to run `picture()` once request finished.
+You can do this manually using `window.Pixboost.picture()` call or you can trigger custom
+`pbUpdate` event:
+
+```js
+document.dispatchEvent(new CustomEvent('pbUpdate'));
+```
 
 ## Supporting Breakpoints
 

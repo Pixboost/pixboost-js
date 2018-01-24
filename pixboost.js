@@ -20,6 +20,17 @@ _window.Pixboost = {
 
   _apiKey: '',
 
+  /**
+   * This function is called on DOMContentLoaded event.
+   *
+   * Looks up <script> tag with id="pb-script" and loads settings from attributes.
+   * Supported attributes:
+   *  - data-autoload - if present then will execute picture replacement
+   *  - data-api-key - api ket that will be used. Must be set if data-autoload is set
+   *
+   * Also, this function will setup listener for pbUpdate event that will execute picture replacement.
+   * It would be usefull if content is loaded through AJAX requests.
+   */
   init: function () {
     var scriptTag = _window.document.getElementById('pb-script');
     if (typeof scriptTag !== 'undefined' && scriptTag) {
@@ -47,20 +58,16 @@ _window.Pixboost = {
    * data-pb-picture attribute.
    * @param {object} options
    * @param {string} options.apiKey Pixboost api key that will be used
-   * @param {Document} options.document DOM Document
    */
   picture: function (options) {
     var self = this;
+    var doc = _window.document;
+
     options = options || {};
 
     var apiKey = options.apiKey || _window.Pixboost._apiKey;
     if (!apiKey) {
       throw 'apiKey option is mandatory';
-    }
-
-    var doc = options.document || _window.document;
-    if (!doc) {
-      throw 'document object must be provided';
     }
 
     var createSource = function (mediaQuery, src, op, params) {
