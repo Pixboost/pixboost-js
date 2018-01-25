@@ -3,7 +3,7 @@
 const jsdom = require('jsdom');
 const assert = require('assert');
 
-const testCases = () => {
+const testCases = (urls) => {
   it('should contain one picture tag', () => {
     const pictures = global.window.document.getElementsByTagName('picture');
     assert.equal(pictures.length, 1);
@@ -24,14 +24,14 @@ const testCases = () => {
     it(`should generate <source> for ${b.name} breakpoint`, () => {
       const source = global.window.document.querySelectorAll(`source[media="${b.mediaQuery}"]`);
       assert.equal(source.length, 1);
-      assert.equal(source[0].getAttribute('srcset'), b.srcset);
+      assert.equal(source[0].getAttribute('srcset'), urls[b.name]);
     });
   });
 
   it('should contain <img> that points to the small breakpoint', () => {
     const img = global.window.document.querySelectorAll(`img`);
     assert.equal(img.length, 1);
-    assert.equal(img[0].getAttribute('src'), 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?auth=123&size=100x100');
+    assert.equal(img[0].getAttribute('src'), urls['img']);
   });
 };
 
@@ -51,34 +51,60 @@ describe('Pixboost JS', function () {
   describe('when inserting <picture> tag manually', function () {
 
     beforeEach(async () => {
-      const dom = await jsdom.JSDOM.fromFile('./test/test.html', {virtualConsole});
+      const dom = await jsdom.JSDOM.fromFile('./test/fixtures/test.html', {virtualConsole});
       global.window.document = dom.window.document;
 
       pixboost.picture({apiKey: '123'});
     });
 
-    testCases();
+    testCases({
+      lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+      md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+      img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+    });
   });
 
   describe('when dispatch pbUpdate event', () => {
     beforeEach(async () => {
-      const dom = await jsdom.JSDOM.fromFile('./test/test-init.html', {virtualConsole});
+      const dom = await jsdom.JSDOM.fromFile('./test/fixtures/test-init.html', {virtualConsole});
       global.window.document = dom.window.document;
       pixboost.init();
       global.window.document.dispatchEvent(new dom.window.CustomEvent('pbUpdate'));
     });
 
-    testCases();
+    testCases({
+      lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+      md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+      img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+    });
   });
 
   describe('when autoload is turned on', () => {
     beforeEach(async () => {
-      const dom = await jsdom.JSDOM.fromFile('./test/test-autoload.html', {virtualConsole});
+      const dom = await jsdom.JSDOM.fromFile('./test/fixtures/test-autoload.html', {virtualConsole});
       global.window.document = dom.window.document;
       pixboost.init();
     });
 
-    testCases();
+    testCases({
+      lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+      md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+      img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+    });
   });
 
+  describe('when using default url', () => {
+    beforeEach(async () => {
+      const dom = await jsdom.JSDOM.fromFile('./test/fixtures/test-default-attrs.html', {virtualConsole});
+      global.window.document = dom.window.document;
+
+      pixboost.picture({apiKey: '123'});
+    });
+
+    testCases({
+      lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/optimise?auth=123',
+      md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123',
+      img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/fit?size=100x100&auth=123'
+    });
+  });
 });

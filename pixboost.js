@@ -70,7 +70,7 @@ _window.Pixboost = {
     }
 
     var pixboostUrl = function (src, op, params) {
-      var url = 'https://pixboost.com/api/2/img/' + src + '/' + op + '?auth=' + apiKey;
+      var url = 'https://pixboost.com/api/2/img/' + src + '/' + op + (op.includes('?') ? '&' : '?') + 'auth=' + apiKey;
       if (params) {
         url += '&' + params;
       }
@@ -88,6 +88,7 @@ _window.Pixboost = {
     };
 
     doc.querySelectorAll('[data-pb-picture]').forEach(function (el) {
+      var defaultUrl = el.getAttribute('data-pb-url');
       var pic = doc.createElement('picture');
 
       self._BREAKPOINTS.forEach(function (bp, idx) {
@@ -99,10 +100,10 @@ _window.Pixboost = {
 
         if (isLast) {
           var imgEl = doc.createElement('img');
-          imgEl.setAttribute('src', pixboostUrl(attrUrl, attrOp, attrOpParams));
+          imgEl.setAttribute('src', pixboostUrl(attrUrl || defaultUrl, attrOp, attrOpParams));
           pic.appendChild(imgEl);
         } else {
-          pic.appendChild(createSource(bp.mediaQuery, attrUrl, attrOp, attrOpParams));
+          pic.appendChild(createSource(bp.mediaQuery, attrUrl || defaultUrl, attrOp, attrOpParams));
         }
       });
 
