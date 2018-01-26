@@ -88,14 +88,15 @@ _window.Pixboost = {
     };
 
     doc.querySelectorAll('[data-pb-picture]').forEach(function (el) {
-      var defaultUrl = el.getAttribute('data-pb-url');
-      var pic = doc.createElement('picture');
+      var attrPrefix = 'data-',
+        defaultUrl = el.getAttribute(attrPrefix + 'url'),
+        pic = doc.createElement('picture');
 
       self._BREAKPOINTS.forEach(function (bp, idx) {
         var
-          attrUrl = el.getAttribute('data-pb-' + bp.name + '-url'),
-          attrOp = el.getAttribute('data-pb-' + bp.name),
-          attrOpParams = el.getAttribute('data-pb-' + bp.name + '-params'),
+          attrUrl = el.getAttribute(attrPrefix + bp.name + '-url'),
+          attrOp = el.getAttribute(attrPrefix + bp.name),
+          attrOpParams = el.getAttribute(attrPrefix + bp.name + '-params'),
           isLast = idx === self._BREAKPOINTS.length - 1;
 
         if (isLast) {
