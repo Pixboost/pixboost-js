@@ -18,14 +18,12 @@ For instance, for this element:
 
 ```html
 <div data-pb-picture
-    data-pb-lg="optimise"
-    data-pb-lg-url="https://yoursite.com/doggy.png"
-    data-pb-md="resize"
-    data-pb-md-url="https://yoursite.com/doggy.png"
-    data-pb-md-params="size=300"
-    data-pb-sm="fit"
-    data-pb-sm-url="https://yoursite.com/doggy.png"
-    data-pb-sm-params="size=100x100"/>
+    data-lg="optimise"
+    data-lg-url="https://yoursite.com/doggy.png"
+    data-md="resize?size=300"
+    data-md-url="https://yoursite.com/doggy.png"
+    data-sm="fit?size=100x100"
+    data-sm-url="https://yoursite.com/doggy.png"/>
 ```
 
 when you run picture() function from the library: 
@@ -48,7 +46,7 @@ then inserted `<picture>` tag will be:
 </picture>
 ```
 
-Operations (`data-pb-<BREAKPOINT>` attribute):
+Operations (`data-<BREAKPOINT>` attribute):
 
 * optimise
 * resize
@@ -56,9 +54,19 @@ Operations (`data-pb-<BREAKPOINT>` attribute):
 * asis
 * hide
 
+You can specify query params adding them after operation name, e.g. `fit?size=100x100`
+
 See more about operations [here](https://pixboost.com/docs/api/).
 
-`data-pb-<BREAKPOINT>-params` is a query param string that will be passed to the URL.
+If you have the same source image for all operations then you can specify default URL:
+
+```html
+<div data-pb-picture
+    data-url="https://yoursite.com/doggy.png"
+    data-lg="optimise"
+    data-md="resize?size=300"
+    data-sm="fit?size=100x100"/>
+``` 
 
 ### Replacing on document load
 
