@@ -69,19 +69,24 @@ _window.Pixboost = {
       throw 'apiKey option is mandatory';
     }
 
-    var pixboostUrl = function (src, op, params) {
-      var url = 'https://pixboost.com/api/2/img/' + src + '/' + op + (op.includes('?') ? '&' : '?') + 'auth=' + apiKey;
-      if (params) {
-        url += '&' + params;
+    var pixboostUrl = function (src, op) {
+      if (op.indexOf('hide') === 0) {
+        return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
       }
-
-      return url;
+      return 'https://pixboost.com/api/2/img/' + src + '/' + op + (op.includes('?') ? '&' : '?') + 'auth=' + apiKey;
     };
 
-    var createSource = function (mediaQuery, src, op, params) {
+    var createImage = function (url, op) {
+      var imgEl = doc.createElement('img');
+      imgEl.setAttribute('src', pixboostUrl(url, op));
+
+      return imgEl;
+    };
+
+    var createSource = function (mediaQuery, src, op) {
       var el = doc.createElement('source');
 
-      el.setAttribute('srcset', pixboostUrl(src, op, params));
+      el.setAttribute('srcset', pixboostUrl(src, op));
       el.setAttribute('media', mediaQuery);
 
       return el;
@@ -93,19 +98,12 @@ _window.Pixboost = {
         pic = doc.createElement('picture');
 
       self._BREAKPOINTS.forEach(function (bp, idx) {
-        var
-          attrUrl = el.getAttribute(attrPrefix + bp.name + '-url'),
+        var attrUrl = el.getAttribute(attrPrefix + bp.name + '-url'),
           attrOp = el.getAttribute(attrPrefix + bp.name),
-          attrOpParams = el.getAttribute(attrPrefix + bp.name + '-params'),
-          isLast = idx === self._BREAKPOINTS.length - 1;
+          isLast = idx === self._BREAKPOINTS.length - 1,
+          url = attrUrl || defaultUrl;
 
-        if (isLast) {
-          var imgEl = doc.createElement('img');
-          imgEl.setAttribute('src', pixboostUrl(attrUrl || defaultUrl, attrOp, attrOpParams));
-          pic.appendChild(imgEl);
-        } else {
-          pic.appendChild(createSource(bp.mediaQuery, attrUrl || defaultUrl, attrOp, attrOpParams));
-        }
+        pic.appendChild(isLast ? createImage(url, attrOp) : createSource(bp.mediaQuery, url, attrOp));
       });
 
       el.parentNode.replaceChild(pic, el);
