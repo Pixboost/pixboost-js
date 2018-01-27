@@ -107,4 +107,19 @@ describe('Pixboost JS', function () {
       img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/fit?size=100x100&auth=123'
     });
   });
+
+  describe('when using hide operation', () => {
+    beforeEach(async () => {
+      const dom = await jsdom.JSDOM.fromFile('./test/fixtures/test-hide.html', {virtualConsole});
+      global.window.document = dom.window.document;
+
+      pixboost.picture({apiKey: '123'});
+    });
+
+    testCases({
+      lg: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+      md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/fit?size=100x100&auth=123',
+      img: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+    });
+  });
 });
