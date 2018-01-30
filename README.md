@@ -82,11 +82,10 @@ You can turn on automatic replacement by setting up `<script>` tag:
 ### Reloading
 
 If you are fetching content using AJAX then you might want to run `picture()` once request finished.
-You can do this manually using `window.Pixboost.picture()` call or you can trigger custom
-`pbUpdate` event:
+You can do this manually using `window.Pixboost.picture()` call or you can trigger `pbUpdate` event:
 
 ```js
-document.dispatchEvent(new CustomEvent('pbUpdate'));
+document.dispatchEvent(new Event('pbUpdate'));
 ```
 
 ## Supporting Breakpoints
