@@ -122,4 +122,19 @@ describe('Pixboost JS', function () {
       img: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
     });
   });
+
+  describe('when using custom domain', () => {
+    beforeEach(async () => {
+      const dom = await jsdom.JSDOM.fromFile('./test/fixtures/test-custom-domain.html', {virtualConsole});
+      global.window.document = dom.window.document;
+
+      pixboost.picture({apiKey: '123', domain: 'static.doggy.com'});
+    });
+
+    testCases({
+      lg: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+      md: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+      img: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+    });
+  });
 });

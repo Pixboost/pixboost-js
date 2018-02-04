@@ -18,6 +18,7 @@ _window.Pixboost = {
   ],
 
   _apiKey: '',
+  _domain: '',
 
   /**
    * This function is called on DOMContentLoaded event.
@@ -26,6 +27,7 @@ _window.Pixboost = {
    * Supported attributes:
    *  - data-autoload - if present then will execute picture replacement
    *  - data-api-key - api ket that will be used. Must be set if data-autoload is set
+   *  - data-domain - custom domain name if setup to use instead of pixboost.com
    *
    * Also, this function will setup listener for pbUpdate event that will execute picture replacement.
    * It would be usefull if content is loaded through AJAX requests.
@@ -35,9 +37,13 @@ _window.Pixboost = {
     if (typeof scriptTag !== 'undefined' && scriptTag) {
       var autoload = scriptTag.hasAttribute('data-autoload');
       var apiKey = scriptTag.getAttribute('data-api-key');
+      var domain = scriptTag.getAttribute('data-domain');
 
       if (apiKey) {
         _window.Pixboost._apiKey = apiKey;
+      }
+      if (domain) {
+        _window.Pixboost.domain = domain;
       }
 
       if (autoload) {
@@ -57,6 +63,7 @@ _window.Pixboost = {
    * data-pb-picture attribute.
    * @param {object} options
    * @param {string} options.apiKey Pixboost api key that will be used
+   * @param {string} options.domain Custom domain name if setup to use instead of pixboost.com
    */
   picture: function (options) {
     var self = this;
@@ -68,12 +75,13 @@ _window.Pixboost = {
     if (!apiKey) {
       throw 'apiKey option is mandatory';
     }
+    var domain = options.domain || _window.Pixboost._domain || 'pixboost.com';
 
     var pixboostUrl = function (src, op) {
       if (op.indexOf('hide') === 0) {
         return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
       }
-      return 'https://pixboost.com/api/2/img/' + src + '/' + op + (op.includes('?') ? '&' : '?') + 'auth=' + apiKey;
+      return 'https://' + domain + '/api/2/img/' + src + '/' + op + (op.includes('?') ? '&' : '?') + 'auth=' + apiKey;
     };
 
     var createImage = function (url, op) {
