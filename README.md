@@ -79,6 +79,25 @@ You can turn on automatic replacement by setting up `<script>` tag:
         data-autoload></script>
 ```
 
+### Custom domain name
+
+If you have [custom domain name](https://help.pixboost.com/setup/custom-domain.html) setup then
+you can pass domain to the script tag using `data-domain` attribute:
+
+```html
+    <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
+        id="pb-script" 
+        data-api-key="API_KEY"
+        data-domain="static.yoursite.com"
+        data-autoload></script>
+```
+
+Or you can pass it to picture() call:
+
+```js
+  window.Pixboost.picture({apiKey: 'API_KEY', domain: 'static.yoursite.com'})
+```
+
 ### Reloading
 
 If you are fetching content using AJAX then you might want to run `picture()` once request finished.
