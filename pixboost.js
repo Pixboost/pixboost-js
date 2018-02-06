@@ -81,7 +81,8 @@ _window.Pixboost = {
       if (op.indexOf('hide') === 0) {
         return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
       }
-      return 'https://' + domain + '/api/2/img/' + src + '/' + op + (op.includes('?') ? '&' : '?') + 'auth=' + apiKey;
+      var hasParams = op.indexOf('?') > -1;
+      return 'https://' + domain + '/api/2/img/' + src + '/' + op + (hasParams ? '&' : '?') + 'auth=' + apiKey;
     };
 
     var createImage = function (url, op) {
@@ -100,7 +101,9 @@ _window.Pixboost = {
       return el;
     };
 
-    doc.querySelectorAll('[data-pb-picture]').forEach(function (el) {
+    var pbPictures = doc.querySelectorAll('[data-pb-picture]');
+    for (var i = 0; i < pbPictures.length; i++) {
+      var el = pbPictures[i];
       var attrPrefix = 'data-',
         defaultUrl = el.getAttribute(attrPrefix + 'url'),
         pic = doc.createElement('picture');
@@ -115,7 +118,7 @@ _window.Pixboost = {
       });
 
       el.parentNode.replaceChild(pic, el);
-    });
+    }
   }
 };
 
