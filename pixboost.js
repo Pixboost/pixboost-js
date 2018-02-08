@@ -43,7 +43,7 @@ _window.Pixboost = {
         _window.Pixboost._apiKey = apiKey;
       }
       if (domain) {
-        _window.Pixboost.domain = domain;
+        _window.Pixboost._domain = domain;
       }
 
       if (autoload) {
