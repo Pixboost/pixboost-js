@@ -30,7 +30,7 @@ _window.Pixboost = {
    *  - data-domain - custom domain name if setup to use instead of pixboost.com
    *
    * Also, this function will setup listener for pbUpdate event that will execute picture replacement.
-   * It would be usefull if content is loaded through AJAX requests.
+   * It would be useful if content is loaded through AJAX requests.
    */
   init: function () {
     var scriptTag = _window.document.getElementById('pb-script');
@@ -101,6 +101,7 @@ _window.Pixboost = {
       return el;
     };
 
+    //Replacing all pixboost tags with picture
     var pbPictures = doc.querySelectorAll('[data-pb-picture]');
     for (var i = 0; i < pbPictures.length; i++) {
       var el = pbPictures[i];
@@ -118,6 +119,11 @@ _window.Pixboost = {
       });
 
       el.parentNode.replaceChild(pic, el);
+    }
+
+    //Calling picture polyfill library
+    if (_window.picturefill && typeof _window.picturefill === 'function') {
+      _window.picturefill();
     }
   }
 };
