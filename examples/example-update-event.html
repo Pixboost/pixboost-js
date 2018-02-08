@@ -4,9 +4,16 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" id="pb-script" data-api-key="MTg4MjMxMzM3MA__" src="https://pixboost.com/libs/pixboost.js"></script>
+    <script>
+        window.pbUpdate = function (){
+          var pbUpdateEvent = document.createEvent("Event");
+          pbUpdateEvent.initEvent("pbUpdate", false, true);
+          document.dispatchEvent(pbUpdateEvent);
+        }
+    </script>
 </head>
 
-<body onload="window.document.dispatchEvent(new Event('pbUpdate'))">
+<body onload="window.pbUpdate()">
 <div data-pb-picture
      data-lg="resize?size=x600"
      data-lg-url="http://www.midday.coffee/midday-coffee.jpg"
