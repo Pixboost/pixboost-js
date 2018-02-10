@@ -30,7 +30,7 @@ _window.Pixboost = {
    *  - data-domain - custom domain name if setup to use instead of pixboost.com
    *
    * Also, this function will setup listener for pbUpdate event that will execute picture replacement.
-   * It would be usefull if content is loaded through AJAX requests.
+   * It would be useful if content is loaded through AJAX requests.
    */
   init: function () {
     var scriptTag = _window.document.getElementById('pb-script');
@@ -43,7 +43,7 @@ _window.Pixboost = {
         _window.Pixboost._apiKey = apiKey;
       }
       if (domain) {
-        _window.Pixboost.domain = domain;
+        _window.Pixboost._domain = domain;
       }
 
       if (autoload) {
@@ -81,7 +81,8 @@ _window.Pixboost = {
       if (op.indexOf('hide') === 0) {
         return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
       }
-      return 'https://' + domain + '/api/2/img/' + src + '/' + op + (op.includes('?') ? '&' : '?') + 'auth=' + apiKey;
+      var hasParams = op.indexOf('?') > -1;
+      return 'https://' + domain + '/api/2/img/' + src + '/' + op + (hasParams ? '&' : '?') + 'auth=' + apiKey;
     };
 
     var createImage = function (url, op) {
@@ -100,7 +101,10 @@ _window.Pixboost = {
       return el;
     };
 
-    doc.querySelectorAll('[data-pb-picture]').forEach(function (el) {
+    //Replacing all pixboost tags with picture
+    var pbPictures = doc.querySelectorAll('[data-pb-picture]');
+    for (var i = 0; i < pbPictures.length; i++) {
+      var el = pbPictures[i];
       var attrPrefix = 'data-',
         defaultUrl = el.getAttribute(attrPrefix + 'url'),
         pic = doc.createElement('picture');
@@ -115,7 +119,12 @@ _window.Pixboost = {
       });
 
       el.parentNode.replaceChild(pic, el);
-    });
+    }
+
+    //Calling picture polyfill library
+    if (_window.picturefill && typeof _window.picturefill === 'function') {
+      _window.picturefill();
+    }
   }
 };
 

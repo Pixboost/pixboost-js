@@ -68,6 +68,10 @@ If you have the same source image for all operations then you can specify defaul
     data-sm="fit?size=100x100"/>
 ``` 
 
+### Browser Support
+
+TODO:
+
 ### Replacing on document load
 
 You can turn on automatic replacement by setting up `<script>` tag:
@@ -104,7 +108,9 @@ If you are fetching content using AJAX then you might want to run `picture()` on
 You can do this manually using `window.Pixboost.picture()` call or you can trigger `pbUpdate` event:
 
 ```js
-document.dispatchEvent(new Event('pbUpdate'));
+    var pbUpdateEvent = document.createEvent("Event");
+    pbUpdateEvent.initEvent("pbUpdate", false, true);
+    document.dispatchEvent(pbUpdateEvent);
 ```
 
 ## Supporting Breakpoints
