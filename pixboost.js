@@ -41,7 +41,7 @@ _window.Pixboost = {
       var autoload = scriptTag.hasAttribute('data-autoload');
       var apiKey = scriptTag.getAttribute('data-api-key');
       var domain = scriptTag.getAttribute('data-domain');
-      var events = scriptTag.getAttribute('data-update-events');
+      var events = scriptTag.getAttribute('data-events');
       var jqueryEvents = scriptTag.getAttribute('data-jquery-events');
 
       if (apiKey) {
