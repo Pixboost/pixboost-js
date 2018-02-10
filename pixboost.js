@@ -28,6 +28,9 @@ _window.Pixboost = {
    *  - data-autoload - if present then will execute picture replacement
    *  - data-api-key - api ket that will be used. Must be set if data-autoload is set
    *  - data-domain - custom domain name if setup to use instead of pixboost.com
+   *  - data-events - comma separated list of events that will trigger update
+   *  - data-jquery-events - comma separated list of JQuery events that will trigger event. window.$ should be exist
+   *    at the time of the function call
    *
    * Also, this function will setup listener for pbUpdate event that will execute picture replacement.
    * It would be useful if content is loaded through AJAX requests.
