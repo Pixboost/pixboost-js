@@ -39,6 +39,7 @@ _window.Pixboost = {
       var apiKey = scriptTag.getAttribute('data-api-key');
       var domain = scriptTag.getAttribute('data-domain');
       var events = scriptTag.getAttribute('data-update-events');
+      var jqueryEvents = scriptTag.getAttribute('data-jquery-events');
 
       if (apiKey) {
         _window.Pixboost._apiKey = apiKey;
@@ -61,6 +62,12 @@ _window.Pixboost = {
         var eventsList = events.split(',');
         for (var i = 0; i < eventsList.length; i++) {
           _window.document.addEventListener(eventsList[i], onEvent);
+        }
+      }
+      if (jqueryEvents && _window.$) {
+        var $eventsList = jqueryEvents.split(',');
+        for (var i = 0; i < $eventsList.length; i++) {
+          _window.$(document).on($eventsList[i], onEvent);
         }
       }
     }
