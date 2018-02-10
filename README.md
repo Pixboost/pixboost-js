@@ -113,6 +113,10 @@ You can do this manually using `window.Pixboost.picture()` call or you can trigg
     document.dispatchEvent(pbUpdateEvent);
 ```
 
+#### Custom reload events
+
+TODO:
+
 ## Supporting Breakpoints
 
 

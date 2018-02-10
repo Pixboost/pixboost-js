@@ -28,6 +28,9 @@ _window.Pixboost = {
    *  - data-autoload - if present then will execute picture replacement
    *  - data-api-key - api ket that will be used. Must be set if data-autoload is set
    *  - data-domain - custom domain name if setup to use instead of pixboost.com
+   *  - data-events - comma separated list of events that will trigger update
+   *  - data-jquery-events - comma separated list of JQuery events that will trigger event. window.$ should be exist
+   *    at the time of the function call
    *
    * Also, this function will setup listener for pbUpdate event that will execute picture replacement.
    * It would be useful if content is loaded through AJAX requests.
@@ -38,6 +41,8 @@ _window.Pixboost = {
       var autoload = scriptTag.hasAttribute('data-autoload');
       var apiKey = scriptTag.getAttribute('data-api-key');
       var domain = scriptTag.getAttribute('data-domain');
+      var events = scriptTag.getAttribute('data-events');
+      var jqueryEvents = scriptTag.getAttribute('data-jquery-events');
 
       if (apiKey) {
         _window.Pixboost._apiKey = apiKey;
@@ -50,11 +55,24 @@ _window.Pixboost = {
         _window.Pixboost.picture({apiKey: apiKey});
       }
 
-      _window.document.addEventListener('pbUpdate', function(e) {
+      var onEvent = function(e) {
         _window.Pixboost.picture({
           apiKey: e.detail ? e.detail.apiKey : undefined
         });
-      });
+      };
+      _window.document.addEventListener('pbUpdate', onEvent);
+      if (events) {
+        var eventsList = events.split(',');
+        for (var i = 0; i < eventsList.length; i++) {
+          _window.document.addEventListener(eventsList[i], onEvent);
+        }
+      }
+      if (jqueryEvents && _window.$) {
+        var $eventsList = jqueryEvents.split(',');
+        for (var i = 0; i < $eventsList.length; i++) {
+          _window.$(document).on($eventsList[i], onEvent);
+        }
+      }
     }
   },
 

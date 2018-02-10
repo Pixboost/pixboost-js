@@ -79,6 +79,21 @@ describe('Pixboost JS', function () {
     });
   });
 
+  describe('when dispatch custom event', () => {
+    beforeEach(async () => {
+      const dom = await jsdom.JSDOM.fromFile('./test/fixtures/test-custom-event.html', {virtualConsole});
+      global.window.document = dom.window.document;
+      pixboost.init();
+      global.window.document.dispatchEvent(new dom.window.CustomEvent('contentloaded'));
+    });
+
+    testCases({
+      lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+      md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+      img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+    });
+  });
+
   describe('when autoload is turned on', () => {
     beforeEach(async () => {
       const dom = await jsdom.JSDOM.fromFile('./test/fixtures/test-autoload.html', {virtualConsole});
