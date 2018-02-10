@@ -38,6 +38,7 @@ _window.Pixboost = {
       var autoload = scriptTag.hasAttribute('data-autoload');
       var apiKey = scriptTag.getAttribute('data-api-key');
       var domain = scriptTag.getAttribute('data-domain');
+      var events = scriptTag.getAttribute('data-update-events');
 
       if (apiKey) {
         _window.Pixboost._apiKey = apiKey;
@@ -50,11 +51,18 @@ _window.Pixboost = {
         _window.Pixboost.picture({apiKey: apiKey});
       }
 
-      _window.document.addEventListener('pbUpdate', function(e) {
+      var onEvent = function(e) {
         _window.Pixboost.picture({
           apiKey: e.detail ? e.detail.apiKey : undefined
         });
-      });
+      };
+      _window.document.addEventListener('pbUpdate', onEvent);
+      if (events) {
+        var eventsList = events.split(',');
+        for (var i = 0; i < eventsList.length; i++) {
+          _window.document.addEventListener(eventsList[i], onEvent);
+        }
+      }
     }
   },
 
