@@ -68,6 +68,10 @@ If you have the same source image for all operations then you can specify defaul
     data-sm="fit?size=100x100"/>
 ``` 
 
+### Browser Support
+
+TODO:
+
 ### Replacing on document load
 
 You can turn on automatic replacement by setting up `<script>` tag:
