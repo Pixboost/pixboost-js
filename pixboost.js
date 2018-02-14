@@ -43,6 +43,10 @@ _window.Pixboost = {
       var domain = scriptTag.getAttribute('data-domain');
       var events = scriptTag.getAttribute('data-events');
       var jqueryEvents = scriptTag.getAttribute('data-jquery-events');
+      var runUpdate = function(apiKey) {
+        _window.Pixboost.picture({apiKey: apiKey});
+        _window.Pixboost.image({apiKey: apiKey});
+      };
 
       if (apiKey) {
         _window.Pixboost._apiKey = apiKey;
@@ -52,13 +56,12 @@ _window.Pixboost = {
       }
 
       if (autoload) {
-        _window.Pixboost.picture({apiKey: apiKey});
+        runUpdate(apiKey);
       }
 
       var onEvent = function(e) {
-        _window.Pixboost.picture({
-          apiKey: e.detail ? e.detail.apiKey : undefined
-        });
+        var eventApiKey = e.detail ? e.detail.apiKey : undefined;
+        runUpdate(eventApiKey);
       };
       _window.document.addEventListener('pbUpdate', onEvent);
       if (events) {
@@ -142,6 +145,47 @@ _window.Pixboost = {
     //Calling picture polyfill library
     if (_window.picturefill && typeof _window.picturefill === 'function') {
       _window.picturefill();
+    }
+  },
+
+  /**
+   * Finds all <img> tags that have data-pb-image attribute
+   * and inserts src attribute using value of data-src attribute
+   * as source and operation. For instance:
+   * <img data-src="https://site.com/logo.png" data-operation="resize?size=300"/>
+   * will be replaced with
+   * <img data-src="https://pixboost.com/api/2/img/https://site.com/logo.png/resize?size=300&auth=YOUR_API_KEY"/>
+   * @param {object} options
+   * @param {string} options.apiKey Pixboost api key that will be used
+   * @param {string} options.domain Custom domain name if setup to use instead of pixboost.com
+   */
+  image: function(options) {
+    var doc = _window.document;
+
+    options = options || {};
+
+    var apiKey = options.apiKey || _window.Pixboost._apiKey;
+    if (!apiKey) {
+      throw 'apiKey option is mandatory';
+    }
+    var domain = options.domain || _window.Pixboost._domain || 'pixboost.com';
+
+    var pixboostUrl = function (src, op) {
+      if (op.indexOf('hide') === 0) {
+        return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+      }
+      var hasParams = op.indexOf('?') > -1;
+      return 'https://' + domain + '/api/2/img/' + src + '/' + op + (hasParams ? '&' : '?') + 'auth=' + apiKey;
+    };
+
+    var pbImages = doc.querySelectorAll('img[data-pb-image]');
+    for (var i = 0; i < pbImages.length; i++) {
+      var el = pbImages[i];
+      var attrPrefix = 'data-',
+        src = el.getAttribute(attrPrefix + 'src'),
+        op = el.getAttribute(attrPrefix + 'op');
+
+      el.setAttribute('src', pixboostUrl(src, op));
     }
   }
 };
