@@ -185,6 +185,7 @@ _window.Pixboost = {
         src = el.getAttribute(attrPrefix + 'src'),
         op = el.getAttribute(attrPrefix + 'op');
 
+      el.removeAttribute('data-pb-image');
       el.setAttribute('src', pixboostUrl(src, op));
     }
   }
