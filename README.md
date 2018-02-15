@@ -1,5 +1,8 @@
 # pixboost-js
 
+[![Build Status](https://travis-ci.org/Pixboost/pixboost-js.svg?branch=master)](https://travis-ci.org/Pixboost/pixboost-js)
+
+
 Javascript library to integrate [Pixboost](https://pixboost.com) into web application that
 can directly modify DOM.
 
