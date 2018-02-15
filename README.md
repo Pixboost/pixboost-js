@@ -11,6 +11,7 @@ You need to include library on your page:
 <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js"></script> 
 ```
 
+### Responsive images - `<picture>`
 Library replaces all elements that marked with data-pb-picture attribute with `<picture>` tag.
 Picture tag will include different sources (images) for different CSS breakpoints.
 
@@ -68,11 +69,22 @@ If you have the same source image for all operations then you can specify defaul
     data-sm="fit?size=100x100"/>
 ``` 
 
-### Browser Support
+#### Supporting Breakpoints
 
-TODO:
 
-### Replacing on document load
+* _lg_ - Large devices (desktops, 990px and up)
+  `@media (min-width: 990px)`
+
+* _md_ - Medium devices (tablets, 640px and up)
+  `@media (max-width: 992px)`
+
+* _sm_ - Small devices - everything below tablets
+
+## Non-responsive images - `<img>`
+
+TODO: 
+
+## Replacing on document load
 
 You can turn on automatic replacement by setting up `<script>` tag:
 
@@ -83,7 +95,7 @@ You can turn on automatic replacement by setting up `<script>` tag:
         data-autoload></script>
 ```
 
-### Custom domain name
+## Custom domain name
 
 If you have [custom domain name](https://help.pixboost.com/setup/custom-domain.html) setup then
 you can pass domain to the script tag using `data-domain` attribute:
@@ -117,13 +129,6 @@ You can do this manually using `window.Pixboost.picture()` call or you can trigg
 
 TODO:
 
-## Supporting Breakpoints
+## Browser Support
 
-
-* _lg_ - Large devices (desktops, 990px and up)
-  `@media (min-width: 990px)`
-
-* _md_ - Medium devices (tablets, 640px and up)
-  `@media (max-width: 992px)`
-
-* _sm_ - Small devices - everything below tablets
+TODO:

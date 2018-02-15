@@ -167,6 +167,10 @@ describe('Pixboost JS', function () {
         assert.equal(img[0].getAttribute('src'), src);
       });
 
+      it('should not have data-pb-image attribute after replacement', () => {
+        const img = global.window.document.getElementsByTagName(`img`);
+        assert.equal(img[0].hasAttribute('data-pb-image'), false);
+      });
     };
 
     describe('when inserting <img> tag manually', function () {
