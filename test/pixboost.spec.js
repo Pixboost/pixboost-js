@@ -153,6 +153,22 @@ describe('Pixboost JS', function () {
         img: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
       });
     });
+
+    describe('when disabled', () => {
+      beforeEach(async () => {
+        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test-disabled.html', {virtualConsole});
+        global.window.document = dom.window.document;
+
+        pixboost.init();
+        pixboost.picture({apiKey: '123', domain: 'static.doggy.com'});
+      });
+
+      testCases({
+        lg: 'https://yoursite.com/doggy-lg.png',
+        md: 'https://yoursite.com/doggy-md.png',
+        img: 'https://yoursite.com/doggy-sm.png'
+      });
+    });
   });
 
   describe('image()', () => {
@@ -224,6 +240,19 @@ describe('Pixboost JS', function () {
         pixboost.image({apiKey: '123', domain: 'static.doggy.com'});
       });
 
-      testCases('https://static.doggy.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123');    });
+      testCases('https://static.doggy.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123');
+    });
+
+    describe('when disabled', () => {
+      beforeEach(async () => {
+        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/image/test-disabled.html', {virtualConsole});
+        global.window.document = dom.window.document;
+
+        pixboost.init();
+        pixboost.image({apiKey: '123', domain: 'static.doggy.com'});
+      });
+
+      testCases('https://yoursite.com/doggy.png');
+    });
   });
 });

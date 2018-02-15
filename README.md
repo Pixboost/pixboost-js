@@ -3,6 +3,22 @@
 Javascript library to integrate [Pixboost](https://pixboost.com) into web application that
 can directly modify DOM.
 
+Table of Contents:
+
+* [Usage](#usage)
+    * [Responsive images](#Responsive images)
+        * [Operations](#Operations)
+        * [Supporting Breakpoints](#Supporting Breakpoints)
+    * [Non-responsive images](#Not responsive images)
+    * [Replacing on document load](#Replacing on document load)
+    * [Custom domain name](#Custom domain name)
+    * [Reloading](#Reloading)
+        * [Custom reload events](#Custom reload events)
+    * [Disabling](#Disabling)
+* [Browsers Support](#Browsers support)
+
+    
+
 ## Usage
 
 You need to include library on your page:
@@ -11,7 +27,7 @@ You need to include library on your page:
 <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js"></script> 
 ```
 
-### Responsive images - `<picture>`
+### Responsive images
 Library replaces all elements that marked with data-pb-picture attribute with `<picture>` tag.
 Picture tag will include different sources (images) for different CSS breakpoints.
 
@@ -47,6 +63,8 @@ then inserted `<picture>` tag will be:
 </picture>
 ```
 
+#### Operations
+
 Operations (`data-<BREAKPOINT>` attribute):
 
 * optimise
@@ -55,7 +73,7 @@ Operations (`data-<BREAKPOINT>` attribute):
 * asis
 * hide
 
-You can specify query params adding them after operation name, e.g. `fit?size=100x100`
+You can specify operation arguments by adding them after operation name, e.g. `fit?size=100x100`
 
 See more about operations [here](https://pixboost.com/docs/api/).
 
@@ -80,11 +98,11 @@ If you have the same source image for all operations then you can specify defaul
 
 * _sm_ - Small devices - everything below tablets
 
-## Non-responsive images - `<img>`
+### Not responsive images
 
 TODO: 
 
-## Replacing on document load
+### Replacing on document load
 
 You can turn on automatic replacement by setting up `<script>` tag:
 
@@ -95,7 +113,7 @@ You can turn on automatic replacement by setting up `<script>` tag:
         data-autoload></script>
 ```
 
-## Custom domain name
+### Custom domain name
 
 If you have [custom domain name](https://help.pixboost.com/setup/custom-domain.html) setup then
 you can pass domain to the script tag using `data-domain` attribute:
@@ -127,8 +145,51 @@ You can do this manually using `window.Pixboost.picture()` call or you can trigg
 
 #### Custom reload events
 
+Library supports native DOM events and JQuery. You can specify list of events separated
+by comma in `data-events` or `data-jquery-events` attributes. For example,
+
+```
+    <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
+            id="pb-script" 
+            data-api-key="API_KEY"
+            data-events="contentloaded"></script>
+```
+
+Then to trigger update:
+
+```
+    var contentLoadedEvent = document.createEvent("Event");
+    contentLoadedEvent.initEvent("contentloaded", false, true);
+    document.dispatchEvent(contentLoadedEvent);
+```
+
+And with JQuery:
+
+```
+    <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
+            id="pb-script" 
+            data-api-key="API_KEY"
+            data-jquery-events="contentloaded"></script>
+```
+
+Then to trigger update:
+
+```
+    $(document).trigger("contentloaded");
+```
+
+### Disabling
+
+You can globally disable URL transformations using `data-disabled` attribute.
+
+```html
+    <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
+        id="pb-script" 
+        data-api-key="API_KEY"
+        data-disabled></script>
+```
+
+## Browsers Support
+
 TODO:
 
-## Browser Support
-
-TODO:
