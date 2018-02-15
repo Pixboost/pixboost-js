@@ -20,6 +20,18 @@ _window.Pixboost = {
   _apiKey: '',
   _domain: '',
 
+  _pixboostUrl: function (src, op, domain, apiKey, disabled) {
+    if (op.indexOf('hide') === 0) {
+      return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+    }
+    if (disabled) {
+      return src;
+    }
+
+    var hasParams = op.indexOf('?') > -1;
+    return 'https://' + domain + '/api/2/img/' + src + '/' + op + (hasParams ? '&' : '?') + 'auth=' + apiKey;
+  },
+
   /**
    * This function is called on DOMContentLoaded event.
    *
@@ -31,6 +43,8 @@ _window.Pixboost = {
    *  - data-events - comma separated list of events that will trigger update
    *  - data-jquery-events - comma separated list of JQuery events that will trigger event. window.$ should be exist
    *    at the time of the function call
+   *  - data-disabled - if attribute presents then won't do any URL transformations. Original URL on picture and img
+   *    tags will be used.
    *
    * Also, this function will setup listener for pbUpdate event that will execute picture replacement.
    * It would be useful if content is loaded through AJAX requests.
@@ -43,6 +57,7 @@ _window.Pixboost = {
       var domain = scriptTag.getAttribute('data-domain');
       var events = scriptTag.getAttribute('data-events');
       var jqueryEvents = scriptTag.getAttribute('data-jquery-events');
+      var disabled = scriptTag.hasAttribute('data-disabled');
       var runUpdate = function(apiKey) {
         _window.Pixboost.picture({apiKey: apiKey});
         _window.Pixboost.image({apiKey: apiKey});
@@ -53,6 +68,9 @@ _window.Pixboost = {
       }
       if (domain) {
         _window.Pixboost._domain = domain;
+      }
+      if (disabled) {
+        _window.Pixboost.disabled = disabled;
       }
 
       if (autoload) {
@@ -98,17 +116,9 @@ _window.Pixboost = {
     }
     var domain = options.domain || _window.Pixboost._domain || 'pixboost.com';
 
-    var pixboostUrl = function (src, op) {
-      if (op.indexOf('hide') === 0) {
-        return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-      }
-      var hasParams = op.indexOf('?') > -1;
-      return 'https://' + domain + '/api/2/img/' + src + '/' + op + (hasParams ? '&' : '?') + 'auth=' + apiKey;
-    };
-
     var createImage = function (url, op) {
       var imgEl = doc.createElement('img');
-      imgEl.setAttribute('src', pixboostUrl(url, op));
+      imgEl.setAttribute('src', self._pixboostUrl(url, op, domain, apiKey, _window.Pixboost.disabled));
 
       return imgEl;
     };
@@ -116,7 +126,7 @@ _window.Pixboost = {
     var createSource = function (mediaQuery, src, op) {
       var el = doc.createElement('source');
 
-      el.setAttribute('srcset', pixboostUrl(src, op));
+      el.setAttribute('srcset', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost.disabled));
       el.setAttribute('media', mediaQuery);
 
       return el;
@@ -161,6 +171,7 @@ _window.Pixboost = {
    */
   image: function(options) {
     var doc = _window.document;
+    var self = this;
 
     options = options || {};
 
@@ -170,14 +181,6 @@ _window.Pixboost = {
     }
     var domain = options.domain || _window.Pixboost._domain || 'pixboost.com';
 
-    var pixboostUrl = function (src, op) {
-      if (op.indexOf('hide') === 0) {
-        return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-      }
-      var hasParams = op.indexOf('?') > -1;
-      return 'https://' + domain + '/api/2/img/' + src + '/' + op + (hasParams ? '&' : '?') + 'auth=' + apiKey;
-    };
-
     var pbImages = doc.querySelectorAll('img[data-pb-image]');
     for (var i = 0; i < pbImages.length; i++) {
       var el = pbImages[i];
@@ -186,7 +189,7 @@ _window.Pixboost = {
         op = el.getAttribute(attrPrefix + 'op');
 
       el.removeAttribute('data-pb-image');
-      el.setAttribute('src', pixboostUrl(src, op));
+      el.setAttribute('src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost.disabled));
     }
   }
 };
