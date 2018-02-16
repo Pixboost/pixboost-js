@@ -11,7 +11,6 @@ const code = {
 };
 const minified = UglifyJS.minify(code, {
   sourceMap: {
-    filename: 'pixboost.js',
     url: 'pixboost.js.map'
   },
   output: {
