@@ -5,4 +5,4 @@ VOLUME /app
 
 WORKDIR /app
 
-CMD npm install
+CMD npm install --unsafe-perm
