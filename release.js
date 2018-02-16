@@ -11,6 +11,7 @@ const code = {
 };
 const minified = UglifyJS.minify(code, {
   sourceMap: {
+    filename: 'pixboost.js',
     url: 'pixboost.js.map'
   },
   output: {
@@ -30,5 +31,6 @@ if (fs.existsSync(distDir)) {
 
 fs.mkdirSync(distDir);
 
-fs.writeFileSync(`${distDir}/pixboost.js`, minified.code);
+fs.writeFileSync(`${distDir}/pixboost.js`, src);
+fs.writeFileSync(`${distDir}/pixboost.min.js`, minified.code);
 fs.writeFileSync(`${distDir}/pixboost.js.map`, minified.map);
