@@ -199,7 +199,10 @@ _window.Pixboost = {
 };
 
 if (typeof _window.document !== 'undefined') {
-  if (_window.document.readyState === 'interactive') {
+  if (_window.document.readyState === 'complete' ||
+      // !IE 8-10
+      (_window.document.readyState !== 'loading' && !_window.document.documentElement.doScroll)
+  ) {
     _window.Pixboost.init();
   } else {
     _window.document.addEventListener('DOMContentLoaded', _window.Pixboost.init);
