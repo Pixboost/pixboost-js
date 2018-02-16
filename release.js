@@ -31,6 +31,6 @@ if (fs.existsSync(distDir)) {
 
 fs.mkdirSync(distDir);
 
-fs.writeFileSync(`${distDir}/pixboost.js`, src);
+fs.writeFileSync(`${distDir}/pixboost.js`, code['pixboost.js']);
 fs.writeFileSync(`${distDir}/pixboost.min.js`, minified.code);
 fs.writeFileSync(`${distDir}/pixboost.js.map`, minified.map);
