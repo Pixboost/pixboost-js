@@ -10,7 +10,10 @@ const code = {
   'pixboost.js': `/*@preserve ${version}*/\n${src}`
 };
 const minified = UglifyJS.minify(code, {
-  sourceMap: true,
+  sourceMap: {
+    filename: 'pixboost.js',
+    url: 'pixboost.js.map'
+  },
   output: {
     comments: 'some'
   }
