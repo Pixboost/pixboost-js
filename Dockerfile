@@ -5,4 +5,4 @@ VOLUME /app
 
 WORKDIR /app
 
-CMD npm run prepublish
+CMD npm install && npm run prepublish
