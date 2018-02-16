@@ -5,7 +5,7 @@
   "main": "pixboost.js",
   "scripts": {
     "test": "mocha ./test/*.spec.js",
-    "prepublish": "node release.js"
+    "prepare": "node release.js"
   },
   "repository": {
     "type": "git",
