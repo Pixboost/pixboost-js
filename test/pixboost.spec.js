@@ -16,7 +16,15 @@ describe('Pixboost JS', function () {
     virtualConsole.sendTo(console);
   });
 
-  describe('picture()', function() {
+  const setup = async (fixture) => {
+    const dom = await jsdom.JSDOM.fromFile(fixture, {virtualConsole});
+    global.window.document = dom.window.document;
+    pixboost.init();
+
+    return dom;
+  };
+
+  describe('picture()', () => {
     const testCases = (urls) => {
       it('should contain one picture tag', () => {
         const pictures = global.window.document.getElementsByTagName('picture');
@@ -49,11 +57,10 @@ describe('Pixboost JS', function () {
       });
     };
 
-    describe('when inserting <picture> tag manually', function () {
+    describe('when inserting <picture> tag manually', () => {
 
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test.html', {virtualConsole});
-        global.window.document = dom.window.document;
+        await setup('./test/fixtures/picture/test.html');
 
         pixboost.picture({apiKey: '123'});
       });
@@ -67,9 +74,8 @@ describe('Pixboost JS', function () {
 
     describe('when dispatch pbUpdate event', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test-init.html', {virtualConsole});
-        global.window.document = dom.window.document;
-        pixboost.init();
+        const dom = await setup('./test/fixtures/picture/test-init.html');
+
         global.window.document.dispatchEvent(new dom.window.CustomEvent('pbUpdate'));
       });
 
@@ -82,9 +88,8 @@ describe('Pixboost JS', function () {
 
     describe('when dispatch custom event', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test-custom-event.html', {virtualConsole});
-        global.window.document = dom.window.document;
-        pixboost.init();
+        const dom = await setup('./test/fixtures/picture/test-custom-event.html');
+
         global.window.document.dispatchEvent(new dom.window.CustomEvent('contentloaded'));
       });
 
@@ -97,9 +102,7 @@ describe('Pixboost JS', function () {
 
     describe('when autoload is turned on', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test-autoload.html', {virtualConsole});
-        global.window.document = dom.window.document;
-        pixboost.init();
+        await setup('./test/fixtures/picture/test-autoload.html');
       });
 
       testCases({
@@ -111,8 +114,7 @@ describe('Pixboost JS', function () {
 
     describe('when using default url', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test-default-attrs.html', {virtualConsole});
-        global.window.document = dom.window.document;
+        await setup('./test/fixtures/picture/test-default-attrs.html');
 
         pixboost.picture({apiKey: '123'});
       });
@@ -126,8 +128,7 @@ describe('Pixboost JS', function () {
 
     describe('when using hide operation', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test-hide.html', {virtualConsole});
-        global.window.document = dom.window.document;
+        await setup('./test/fixtures/picture/test-hide.html');
 
         pixboost.picture({apiKey: '123'});
       });
@@ -141,8 +142,7 @@ describe('Pixboost JS', function () {
 
     describe('when using custom domain', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test-custom-domain.html', {virtualConsole});
-        global.window.document = dom.window.document;
+        await setup('./test/fixtures/picture/test-custom-domain.html');
 
         pixboost.picture({apiKey: '123', domain: 'static.doggy.com'});
       });
@@ -156,10 +156,8 @@ describe('Pixboost JS', function () {
 
     describe('when disabled', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/picture/test-disabled.html', {virtualConsole});
-        global.window.document = dom.window.document;
+        await setup('./test/fixtures/picture/test-disabled.html');
 
-        pixboost.init();
         pixboost.picture({apiKey: '123', domain: 'static.doggy.com'});
       });
 
@@ -189,10 +187,9 @@ describe('Pixboost JS', function () {
       });
     };
 
-    describe('when inserting <img> tag manually', function () {
+    describe('when inserting <img> tag manually', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/image/test.html', {virtualConsole});
-        global.window.document = dom.window.document;
+        await setup('./test/fixtures/image/test.html');
 
         pixboost.image({apiKey: '123'});
       });
@@ -202,9 +199,8 @@ describe('Pixboost JS', function () {
 
     describe('when dispatch pbUpdate event', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/image/test-init.html', {virtualConsole});
-        global.window.document = dom.window.document;
-        pixboost.init();
+        const dom = await setup('./test/fixtures/image/test-init.html');
+
         global.window.document.dispatchEvent(new dom.window.CustomEvent('pbUpdate'));
       });
 
@@ -213,9 +209,8 @@ describe('Pixboost JS', function () {
 
     describe('when dispatch custom event', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/image/test-custom-event.html', {virtualConsole});
-        global.window.document = dom.window.document;
-        pixboost.init();
+        const dom = await setup('./test/fixtures/image/test-custom-event.html');
+
         global.window.document.dispatchEvent(new dom.window.CustomEvent('contentloaded'));
       });
 
@@ -224,9 +219,7 @@ describe('Pixboost JS', function () {
 
     describe('when autoload is turned on', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/image/test-autoload.html', {virtualConsole});
-        global.window.document = dom.window.document;
-        pixboost.init();
+        await setup('./test/fixtures/image/test-autoload.html');
       });
 
       testCases('https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123');
@@ -234,8 +227,7 @@ describe('Pixboost JS', function () {
 
     describe('when using custom domain', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/image/test-custom-domain.html', {virtualConsole});
-        global.window.document = dom.window.document;
+        await setup('./test/fixtures/image/test-custom-domain.html');
 
         pixboost.image({apiKey: '123', domain: 'static.doggy.com'});
       });
@@ -245,10 +237,8 @@ describe('Pixboost JS', function () {
 
     describe('when disabled', () => {
       beforeEach(async () => {
-        const dom = await jsdom.JSDOM.fromFile('./test/fixtures/image/test-disabled.html', {virtualConsole});
-        global.window.document = dom.window.document;
+        await setup('./test/fixtures/image/test-disabled.html');
 
-        pixboost.init();
         pixboost.image({apiKey: '123', domain: 'static.doggy.com'});
       });
 
