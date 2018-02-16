@@ -19,6 +19,7 @@ _window.Pixboost = {
 
   _apiKey: '',
   _domain: '',
+  _disabled: false,
 
   _pixboostUrl: function (src, op, domain, apiKey, disabled) {
     if (op.indexOf('hide') === 0) {
@@ -50,6 +51,10 @@ _window.Pixboost = {
    * It would be useful if content is loaded through AJAX requests.
    */
   init: function () {
+    _window.Pixboost._apiKey = '';
+    _window.Pixboost._domain = '';
+    _window.Pixboost._disabled = false;
+
     var scriptTag = _window.document.getElementById('pb-script');
     if (typeof scriptTag !== 'undefined' && scriptTag) {
       var autoload = scriptTag.hasAttribute('data-autoload');
@@ -69,9 +74,8 @@ _window.Pixboost = {
       if (domain) {
         _window.Pixboost._domain = domain;
       }
-      if (disabled) {
-        _window.Pixboost.disabled = disabled;
-      }
+
+      _window.Pixboost._disabled = disabled;
 
       if (autoload) {
         runUpdate(apiKey);
@@ -118,7 +122,7 @@ _window.Pixboost = {
 
     var createImage = function (url, op) {
       var imgEl = doc.createElement('img');
-      imgEl.setAttribute('src', self._pixboostUrl(url, op, domain, apiKey, _window.Pixboost.disabled));
+      imgEl.setAttribute('src', self._pixboostUrl(url, op, domain, apiKey, _window.Pixboost._disabled));
 
       return imgEl;
     };
@@ -126,7 +130,7 @@ _window.Pixboost = {
     var createSource = function (mediaQuery, src, op) {
       var el = doc.createElement('source');
 
-      el.setAttribute('srcset', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost.disabled));
+      el.setAttribute('srcset', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled));
       el.setAttribute('media', mediaQuery);
 
       return el;
@@ -189,7 +193,7 @@ _window.Pixboost = {
         op = el.getAttribute(attrPrefix + 'op');
 
       el.removeAttribute('data-pb-image');
-      el.setAttribute('src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost.disabled));
+      el.setAttribute('src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled));
     }
   }
 };

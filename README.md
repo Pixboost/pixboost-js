@@ -1,5 +1,8 @@
 # pixboost-js
 
+[![Build Status](https://travis-ci.org/Pixboost/pixboost-js.svg?branch=master)](https://travis-ci.org/Pixboost/pixboost-js)
+
+
 Javascript library to integrate [Pixboost](https://pixboost.com) into web application that
 can directly modify DOM.
 
@@ -16,8 +19,8 @@ Table of Contents:
         * [Custom reload events](#Custom reload events)
     * [Disabling](#Disabling)
 * [Browsers Support](#Browsers support)
-
-    
+* [Build](#Build)
+    * [Using Docker](#Using Docker)
 
 ## Usage
 
@@ -193,3 +196,16 @@ You can globally disable URL transformations using `data-disabled` attribute.
 
 TODO:
 
+## Build
+
+There is a `prepare` to build minified version of the library. It will be run on `npm install` execution.
+Result files will be generated into `dist/` folder.
+
+### Using Docker
+
+If you don't have Nodejs installed locally then you can use docker:
+
+```
+$ docker build -t pixboost-js .
+$ docker run -v $(pwd):/app --rm pixboost-js
+``` 
