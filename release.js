@@ -7,7 +7,7 @@ const rimraf = require('rimraf');
 const version = require('./package.json').version;
 const src = fs.readFileSync(`${__dirname}/pixboost.js`).toString('utf-8');
 const code = {
-  'pixboost.js': `/*@preserve ${version}*/\n${src}`
+  'pixboost.js': `/* @preserve ${version} */\n${src}`
 };
 const minified = UglifyJS.minify(code, {
   sourceMap: {
