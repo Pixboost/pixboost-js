@@ -9,10 +9,10 @@ can directly modify DOM.
 Table of Contents:
 
 * [Usage](#usage)
-    * [Responsive images](#Responsive images)
-        * [Operations](#Operations)
-        * [Supporting Breakpoints](#Supporting Breakpoints)
-    * [Non-responsive images](#Not responsive images)
+    * [Responsive images](#responsive-images)
+        * [Operations](#operations)
+        * [Supporting breakpoints](#supporting-breakpoints)
+    * [Not responsive images](#Not responsive images)
     * [Replacing on document load](#Replacing on document load)
     * [Custom domain name](#Custom domain name)
     * [Reloading](#Reloading)
