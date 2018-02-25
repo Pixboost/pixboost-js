@@ -25,7 +25,7 @@ _window.Pixboost = {
     if (op.indexOf('hide') === 0) {
       return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
     }
-    src = src.replace('https:https:', 'https:').replace('http:http:', 'http:');
+    src = src.replace('https:https:', 'https:').replace('https:http:', 'http:');
     if (disabled) {
       return src;
     }
