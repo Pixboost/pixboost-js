@@ -1,6 +1,6 @@
 {
   "name": "pixboost-js",
-  "version": "1.0.2-ow",
+  "version": "1.1.0-ow",
   "description": "Library to integrate Pixbost service into web applications",
   "main": "pixboost.js",
   "scripts": {
