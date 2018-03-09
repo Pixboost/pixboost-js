@@ -179,6 +179,20 @@ describe('Pixboost JS', function () {
       });
     });
 
+    describe('when protocol doubled', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/picture/test-double-protocol.html');
+
+        pixboost.picture({apiKey: '123'});
+      });
+
+      testCases({
+        lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+        md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+        img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+      });
+    });
+
     describe('when disabled by cookie', () => {
       beforeEach(async () => {
         await setup('./test/fixtures/picture/test-cookie-enable.html');
@@ -283,5 +297,16 @@ describe('Pixboost JS', function () {
 
       testCases('https://yoursite.com/doggy.png');
     });
+
+    describe('when protocol doubled', () => {
+        beforeEach(async () => {
+            await setup('./test/fixtures/image/test-double-protocol.html');
+
+            pixboost.image({apiKey: '123'});
+        });
+
+        testCases('https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123');
+    });
+
   });
 });
