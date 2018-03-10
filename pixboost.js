@@ -25,6 +25,7 @@ _window.Pixboost = {
     if (op.indexOf('hide') === 0) {
       return 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
     }
+    src = src.replace('https:https:', 'https:').replace('https:http:', 'http:');
     if (disabled) {
       return src;
     }
@@ -63,6 +64,7 @@ _window.Pixboost = {
       var events = scriptTag.getAttribute('data-events');
       var jqueryEvents = scriptTag.getAttribute('data-jquery-events');
       var disabled = scriptTag.hasAttribute('data-disabled');
+      var enableByCookie = scriptTag.getAttribute('data-cookie-enable');
       var runUpdate = function(apiKey) {
         _window.Pixboost.picture({apiKey: apiKey});
         _window.Pixboost.image({apiKey: apiKey});
@@ -76,6 +78,14 @@ _window.Pixboost = {
       }
 
       _window.Pixboost._disabled = disabled;
+
+      if (!disabled && enableByCookie) {
+        var cookieRegExp = new RegExp('(?:(?:^|.*;\\s*)' + enableByCookie + '\\s*\\=\\s*([^;]*).*$)|^.*$');
+        var cookieValue = _window.document.cookie.replace(cookieRegExp, "$1");
+        if (cookieValue !== 'true') {
+          _window.Pixboost._disabled = true;
+        }
+      }
 
       if (autoload) {
         runUpdate(apiKey);

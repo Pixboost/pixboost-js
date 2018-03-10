@@ -16,8 +16,19 @@ describe('Pixboost JS', function () {
     virtualConsole.sendTo(console);
   });
 
-  const setup = async (fixture) => {
-    const dom = await jsdom.JSDOM.fromFile(fixture, {virtualConsole});
+  const setup = async (fixture, cookies) => {
+    const cookieJar = new jsdom.CookieJar();
+    if (Array.isArray(cookies) && cookies.length > 0) {
+      cookies.forEach(c => {
+        cookieJar.setCookieSync(`${c};domain=127.0.0.1`, 'http://127.0.0.1', {});
+      });
+    }
+
+    const dom = await jsdom.JSDOM.fromFile(fixture, {
+      virtualConsole,
+      cookieJar,
+      url:'http://127.0.0.1'
+    });
     global.window.document = dom.window.document;
     pixboost.init();
 
@@ -167,6 +178,48 @@ describe('Pixboost JS', function () {
         img: 'https://yoursite.com/doggy-sm.png'
       });
     });
+
+    describe('when protocol doubled', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/picture/test-double-protocol.html');
+
+        pixboost.picture({apiKey: '123'});
+      });
+
+      testCases({
+        lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+        md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+        img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+      });
+    });
+
+    describe('when disabled by cookie', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/picture/test-cookie-enable.html');
+
+        pixboost.picture({apiKey: '123', domain: 'static.doggy.com'});
+      });
+
+      testCases({
+        lg: 'https://yoursite.com/doggy-lg.png',
+        md: 'https://yoursite.com/doggy-md.png',
+        img: 'https://yoursite.com/doggy-sm.png'
+      });
+    });
+
+    describe('when enabled by cookie', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/picture/test-cookie-enable.html', ['optimized-images=true']);
+
+        pixboost.picture({apiKey: '123', domain: 'static.doggy.com'});
+      });
+
+      testCases({
+        lg: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+        md: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+        img: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+      });
+    });
   });
 
   describe('image()', () => {
@@ -244,5 +297,16 @@ describe('Pixboost JS', function () {
 
       testCases('https://yoursite.com/doggy.png');
     });
+
+    describe('when protocol doubled', () => {
+        beforeEach(async () => {
+            await setup('./test/fixtures/image/test-double-protocol.html');
+
+            pixboost.image({apiKey: '123'});
+        });
+
+        testCases('https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123');
+    });
+
   });
 });

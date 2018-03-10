@@ -192,6 +192,21 @@ You can globally disable URL transformations using `data-disabled` attribute.
         data-disabled></script>
 ```
 
+### Enabling by cookie
+
+Sometimes you would want to enable optimized images only if cookie presents. This is useful
+if you are using Optimizely, so you can turn on optimization for small amount of your customers
+in the beginning.
+
+```html
+    <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
+        id="pb-script" 
+        data-api-key="API_KEY"
+        data-cookie-enable="optimized-images"></script>
+```
+
+Value of cookie must be set to `true`.
+
 ## Browsers Support
 
 TODO:
