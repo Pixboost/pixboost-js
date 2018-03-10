@@ -9,18 +9,18 @@ can directly modify DOM.
 Table of Contents:
 
 * [Usage](#usage)
-    * [Responsive images](#Responsive images)
-        * [Operations](#Operations)
-        * [Supporting Breakpoints](#Supporting Breakpoints)
-    * [Non-responsive images](#Not responsive images)
-    * [Replacing on document load](#Replacing on document load)
-    * [Custom domain name](#Custom domain name)
-    * [Reloading](#Reloading)
-        * [Custom reload events](#Custom reload events)
-    * [Disabling](#Disabling)
-* [Browsers Support](#Browsers support)
-* [Build](#Build)
-    * [Using Docker](#Using Docker)
+    * [Responsive images](#responsive-images)
+        * [Operations](#operations)
+        * [Supporting Breakpoints](#supporting-breakpoints)
+    * [Non-responsive images](#not-responsive-images)
+    * [Replacing on document load](#replacing-on-document-load)
+    * [Custom domain name](#custom-domain-name)
+    * [Reloading](#reloading)
+        * [Custom reload events](#custom-reload-events)
+    * [Disabling](#disabling)
+* [Browsers Support](#browsers-support)
+* [Build](#build)
+    * [Using Docker](#using-docker)
 
 ## Usage
 
