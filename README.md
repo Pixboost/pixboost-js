@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/Pixboost/pixboost-js.svg?branch=master)](https://travis-ci.org/Pixboost/pixboost-js)
 
 
-Javascript library to integrate [Pixboost](https://pixboost.com) into web application that
-can directly modify DOM.
+Javascript library to integrate [Pixboost](https://pixboost.com) into a web application that
+can directly access DOM, e.g. using JQuery, Backbone or other libraries.
 
 Table of Contents:
 
@@ -24,15 +24,16 @@ Table of Contents:
 
 ## Usage
 
-You need to include library on your page:
+Add below code into your HTML page to include library:
 
 ```html
 <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js"></script> 
 ```
 
 ### Responsive images
-Library replaces all elements that marked with data-pb-picture attribute with `<picture>` tag.
-Picture tag will include different sources (images) for different CSS breakpoints.
+
+Library replaces all elements that marked with a data-pb-picture attribute with `<picture>` tag.
+Picture tag will include different sources (images) for different CSS breakpoints (screen sizes).
 
 For instance, for this element:
 
@@ -97,17 +98,24 @@ If you have the same source image for all operations then you can specify defaul
   `@media (min-width: 990px)`
 
 * _md_ - Medium devices (tablets, 640px and up)
-  `@media (max-width: 992px)`
+  `@media (min-width: 640px)`
 
 * _sm_ - Small devices - everything below tablets
 
 ### Not responsive images
 
-TODO: 
+You can use library with `<img>` tag as well. Below is an example of image that will be replaced with optimised
+version:
+
+```html
+<img data-op="resize?size=x600" data-src="https://yoursite.com/doggy.png" data-pb-image/>
+```
+
+Call the `image()` function from the library if not using automatic replacement (see below).
 
 ### Replacing on document load
 
-You can turn on automatic replacement by setting up `<script>` tag:
+You can turn on automatic replacement by setting up `data-autoload` attribute on `<script>` tag:
 
 ```html
     <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
@@ -137,8 +145,9 @@ Or you can pass it to picture() call:
 
 ### Reloading
 
-If you are fetching content using AJAX then you might want to run `picture()` once request finished.
-You can do this manually using `window.Pixboost.picture()` call or you can trigger `pbUpdate` event:
+If you are fetching content using AJAX then you might want to run `picture()` and `image()` once requests finished.
+You can do this manually using `window.Pixboost.picture()` and `window.Pixboost.image()` call or you can trigger 
+`pbUpdate` event:
 
 ```js
     var pbUpdateEvent = document.createEvent("Event");
@@ -148,8 +157,8 @@ You can do this manually using `window.Pixboost.picture()` call or you can trigg
 
 #### Custom reload events
 
-Library supports native DOM events and JQuery. You can specify list of events separated
-by comma in `data-events` or `data-jquery-events` attributes. For example,
+The library supports native DOM events and JQuery. You can specify a list of events separated
+by the comma in `data-events` or `data-jquery-events` attributes. For example,
 
 ```
     <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
@@ -195,8 +204,8 @@ You can globally disable URL transformations using `data-disabled` attribute.
 ### Enabling by cookie
 
 Sometimes you would want to enable optimized images only if cookie presents. This is useful
-if you are using Optimizely, so you can turn on optimization for small amount of your customers
-in the beginning.
+if you are using Optimizely or other AB testing services, so you can turn on optimization for a small amount 
+of your customers in the beginning and increase it through time.
 
 ```html
     <script type="text/javascript" src="https://pixboost.com/libs/pixboost.js" 
@@ -205,15 +214,18 @@ in the beginning.
         data-cookie-enable="optimized-images"></script>
 ```
 
-Value of cookie must be set to `true`.
+Value of the cookie must be set to `true`.
 
 ## Browsers Support
 
-TODO:
+The library supports all major browsers including Chrome, Firefox, Safari and Internet Explorer.
+Internet Explorer 9 requires polyfill for `<picture>` implementations. We are recommending to use
+[picturefill](http://scottjehl.github.io/picturefill/) version 3. Pixboost-js has integration with
+it and will call `window.picturefill()` once replacements are done. 
 
 ## Build
 
-There is a `prepare` to build minified version of the library. It will be run on `npm install` execution.
+There is a `prepare` to build a minified version of the library. It will be run on `npm install` execution.
 Result files will be generated into `dist/` folder.
 
 ### Using Docker
