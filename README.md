@@ -18,6 +18,7 @@ Table of Contents:
     * [Reloading](#reloading)
         * [Custom reload events](#custom-reload-events)
     * [Disabling](#disabling)
+    * [Enabling by cookie](#enabling-by-cookie)
 * [Browsers Support](#browsers-support)
 * [Build](#build)
     * [Using Docker](#using-docker)
