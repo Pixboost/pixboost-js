@@ -152,10 +152,18 @@ _window.Pixboost = {
     }
     var domain = options.domain || _window.Pixboost._domain || 'pixboost.com';
 
-    var createImage = function (url, op) {
+    var createImage = function (url, op, isIE9) {
       var imgEl = doc.createElement('img');
       imgEl.setAttribute('src', self._pixboostUrl(url, op, domain, apiKey, _window.Pixboost._disabled));
 
+      if (isIE9) {
+        if (imgEl.hasAttribute('width')) {
+          imgEl.removeAttribute('width');
+        }
+        if (imgEl.hasAttribute('height')) {
+          imgEl.removeAttribute('height');
+        }
+      }
       return imgEl;
     };
 
@@ -191,7 +199,7 @@ _window.Pixboost = {
           url = attrUrl || defaultUrl;
 
         if (isLast) {
-          pic.appendChild(createImage(url, attrOp));
+          pic.appendChild(createImage(url, attrOp, isIE9));
         } else if (isIE9) {
           video.appendChild(createSource(bp.mediaQuery, url, attrOp));
         } else {
