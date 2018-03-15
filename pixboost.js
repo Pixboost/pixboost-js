@@ -2,6 +2,24 @@
 
 var _window = typeof global !== 'undefined' ? global.window : window;
 
+function getBrowser() {
+  var ua=_window.navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+  if(/trident/i.test(M[1])){
+    tem=/\brv[ :]+(\d+)/g.exec(ua) || [];
+    return {name:'IE',version:(tem[1]||'')};
+  }
+  if(M[1]==='Chrome'){
+    tem=ua.match(/\bOPR|Edge\/(\d+)/)
+    if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+  }
+  M=M[2]? [M[1], M[2]]: [_window.navigator.appName, _window.navigator.appVersion, '-?'];
+  if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+  return {
+    name: M[0],
+    version: M[1]
+  };
+}
+
 _window.Pixboost = {
   _BREAKPOINTS: [
     {
@@ -20,6 +38,7 @@ _window.Pixboost = {
   _apiKey: '',
   _domain: '',
   _disabled: false,
+  _browser: '',
 
   _pixboostUrl: function (src, op, domain, apiKey, disabled) {
     if (op.indexOf('hide') === 0) {
@@ -55,6 +74,7 @@ _window.Pixboost = {
     _window.Pixboost._apiKey = '';
     _window.Pixboost._domain = '';
     _window.Pixboost._disabled = false;
+    _window.Pixboost._browser = getBrowser();
 
     var scriptTag = _window.document.getElementById('pb-script');
     if (typeof scriptTag !== 'undefined' && scriptTag) {
@@ -121,6 +141,8 @@ _window.Pixboost = {
   picture: function (options) {
     var self = this;
     var doc = _window.document;
+    var browser = _window.Pixboost._browser;
+    var isIE9 = browser.name === 'MSIE' && browser.version === '9';
 
     options = options || {};
 
@@ -154,13 +176,27 @@ _window.Pixboost = {
         defaultUrl = el.getAttribute(attrPrefix + 'url'),
         pic = doc.createElement('picture');
 
+      //Make <picture> work in IE9 - https://scottjehl.github.io/picturefill/#ie9
+      var video;
+      if (isIE9) {
+        video = doc.createElement('video');
+        video.setAttribute('style', 'display: none;');
+        pic.appendChild(video);
+      }
+
       self._BREAKPOINTS.forEach(function (bp, idx) {
         var attrUrl = el.getAttribute(attrPrefix + bp.name + '-url'),
           attrOp = el.getAttribute(attrPrefix + bp.name),
           isLast = idx === self._BREAKPOINTS.length - 1,
           url = attrUrl || defaultUrl;
 
-        pic.appendChild(isLast ? createImage(url, attrOp) : createSource(bp.mediaQuery, url, attrOp));
+        if (isLast) {
+          pic.appendChild(createImage(url, attrOp));
+        } else if (isIE9) {
+          video.appendChild(createSource(bp.mediaQuery, url, attrOp));
+        } else {
+          pic.appendChild(createSource(bp.mediaQuery, url, attrOp));
+        }
       });
 
       el.parentNode.replaceChild(pic, el);
