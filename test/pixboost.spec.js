@@ -16,7 +16,7 @@ describe('Pixboost JS', function () {
     virtualConsole.sendTo(console);
   });
 
-  const setup = async (fixture, cookies) => {
+  const setup = async (fixture, cookies, userAgent) => {
     const cookieJar = new jsdom.CookieJar();
     if (Array.isArray(cookies) && cookies.length > 0) {
       cookies.forEach(c => {
@@ -24,12 +24,18 @@ describe('Pixboost JS', function () {
       });
     }
 
-    const dom = await jsdom.JSDOM.fromFile(fixture, {
+    const jsDomOptions = {
       virtualConsole,
       cookieJar,
       url:'http://127.0.0.1'
-    });
+    };
+    if (userAgent) {
+      jsDomOptions.userAgent = userAgent;
+    }
+
+    const dom = await jsdom.JSDOM.fromFile(fixture, jsDomOptions);
     global.window.document = dom.window.document;
+    global.window.navigator = dom.window.navigator;
     pixboost.init();
 
     return dom;
@@ -80,6 +86,32 @@ describe('Pixboost JS', function () {
         lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
         md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
         img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+      });
+    });
+
+    describe('when inserting <picture> tag manually in IE9', () => {
+
+      beforeEach(async () => {
+        await setup('./test/fixtures/picture/test.html', undefined,
+          'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729)');
+
+        pixboost.picture({apiKey: '123'});
+      });
+
+      testCases({
+        lg: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+        md: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+        img: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+      });
+
+      it('should have video element', () => {
+        const video = global.window.document.querySelectorAll(`video`);
+        assert.equal(video.length, 1);
+      });
+
+      it('source elements must be inside video element', () => {
+        const sources = global.window.document.querySelectorAll(`video>source`);
+        assert.equal(sources.length, 2);
       });
     });
 
