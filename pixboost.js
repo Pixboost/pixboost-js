@@ -20,6 +20,14 @@ function getBrowser() {
   };
 }
 
+function hasAttribute(el, attr) {
+  if (el.hasAttribute) {
+    return el.hasAttribute(attr)
+  } else {
+    return !!(el.attributes[attr] && el.attributes[name].specified);
+  }
+}
+
 _window.Pixboost = {
   _BREAKPOINTS: [
     {
@@ -188,7 +196,7 @@ _window.Pixboost = {
       var el = pbPictures[i];
       var attrPrefix = 'data-',
         defaultUrl = el.getAttribute(attrPrefix + 'url'),
-        isLazy = el.getAttribute('data-pb-lazy') !== undefined,
+        isLazy = hasAttribute(el, attrPrefix + 'pb-lazy'),
         pic = doc.createElement('picture');
 
       //Make <picture> work in IE9 - https://scottjehl.github.io/picturefill/#ie9
@@ -260,13 +268,14 @@ _window.Pixboost = {
       var attrPrefix = 'data-',
         src = el.getAttribute(attrPrefix + 'src'),
         op = el.getAttribute(attrPrefix + 'op'),
-        isLazy = el.getAttribute(attrPrefix + 'pb-lazy');
+        isLazy = hasAttribute(el, attrPrefix + 'pb-lazy'),
+        url = self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled);
 
       el.removeAttribute('data-pb-image');
-      if (isLazy) {
-        el.setAttribute('src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled));
+      if (!isLazy) {
+        el.setAttribute('src', url);
       } else {
-        el.setAttribute('data-src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled));
+        el.setAttribute('data-src', url);
       }
     }
   }
