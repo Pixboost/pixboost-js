@@ -31,7 +31,8 @@ _window.Pixboost = {
       mediaQuery: '(min-width: 640px)'
     },
     {
-      name: 'sm'
+      name: 'sm',
+      mediaQuery: ''
     }
   ],
 
@@ -88,6 +89,10 @@ _window.Pixboost = {
       var runUpdate = function(apiKey) {
         _window.Pixboost.picture({apiKey: apiKey});
         _window.Pixboost.image({apiKey: apiKey});
+        if (_window.lozad) {
+          var observer = _window.lozad(_window.document.querySelectorAll('[data-pb-lazy]'));
+          observer.observe();
+        }
       };
 
       if (apiKey) {
@@ -143,6 +148,7 @@ _window.Pixboost = {
     var doc = _window.document;
     var browser = _window.Pixboost._browser;
     var isIE9 = browser.name === 'MSIE' && browser.version === '9';
+    var isIE = browser.name === 'MSIE' || browser.name === 'IE'; //TODO: exclude EDGE
 
     options = options || {};
 
@@ -182,6 +188,7 @@ _window.Pixboost = {
       var el = pbPictures[i];
       var attrPrefix = 'data-',
         defaultUrl = el.getAttribute(attrPrefix + 'url'),
+        isLazy = el.getAttribute('data-pb-lazy') !== undefined,
         pic = doc.createElement('picture');
 
       //Make <picture> work in IE9 - https://scottjehl.github.io/picturefill/#ie9
@@ -192,6 +199,10 @@ _window.Pixboost = {
         pic.appendChild(video);
       }
 
+      if(isLazy && !isIE) {
+        pic.setAttribute('data-pb-lazy', "");
+      }
+
       self._BREAKPOINTS.forEach(function (bp, idx) {
         var attrUrl = el.getAttribute(attrPrefix + bp.name + '-url'),
           attrOp = el.getAttribute(attrPrefix + bp.name),
@@ -199,7 +210,11 @@ _window.Pixboost = {
           url = attrUrl || defaultUrl;
 
         if (isLast) {
-          pic.appendChild(createImage(url, attrOp, isIE9));
+          if (isLazy && !isIE) {
+            pic.appendChild(createSource(bp.mediaQuery, url, attrOp));
+          } else {
+            pic.appendChild(createImage(url, attrOp, isIE9));
+          }
         } else if (isIE9) {
           video.appendChild(createSource(bp.mediaQuery, url, attrOp));
         } else {
@@ -244,18 +259,23 @@ _window.Pixboost = {
       var el = pbImages[i];
       var attrPrefix = 'data-',
         src = el.getAttribute(attrPrefix + 'src'),
-        op = el.getAttribute(attrPrefix + 'op');
+        op = el.getAttribute(attrPrefix + 'op'),
+        isLazy = el.getAttribute(attrPrefix + 'pb-lazy');
 
       el.removeAttribute('data-pb-image');
-      el.setAttribute('src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled));
+      if (isLazy) {
+        el.setAttribute('src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled));
+      } else {
+        el.setAttribute('data-src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled));
+      }
     }
   }
 };
 
 if (typeof _window.document !== 'undefined') {
   if (_window.document.readyState === 'complete' ||
-      // !IE 8-10
-      (_window.document.readyState !== 'loading' && !_window.document.documentElement.doScroll)
+    // !IE 8-10
+    (_window.document.readyState !== 'loading' && !_window.document.documentElement.doScroll)
   ) {
     _window.Pixboost.init();
   } else {

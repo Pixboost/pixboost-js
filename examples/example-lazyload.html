@@ -1,0 +1,28 @@
+<!Doctype html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://cdn.rawgit.com/scottjehl/picturefill/3.0.2/dist/picturefill.min.js"></script>
+    <script type="text/javascript" src="./intersection-observer.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
+    <script type="text/javascript" src="./pixboost.js" id="pb-script" data-autoload data-api-key="MTg4MjMxMzM3MA__"></script>
+</head>
+
+<body>
+<div style="min-height: 2000px">Push image to offscreen</div>
+
+<div data-pb-picture
+     data-pb-lazy=""
+     data-lg="resize?size=x600"
+     data-lg-url="http://www.midday.coffee/midday-coffee.jpg"
+     data-md="resize?size=300"
+     data-md-url="http://www.midday.coffee/midday-coffee.jpg"
+     data-sm="fit?size=100x100"
+     data-sm-url="http://www.midday.coffee/midday-coffee.jpg"></div>
+
+<img data-op="resize?size=x200" data-src="http://www.midday.coffee/midday-coffee.jpg" data-pb-image data-pb-lazy=""/>
+</body>
+</html>
+
+
