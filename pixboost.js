@@ -98,7 +98,9 @@ _window.Pixboost = {
         _window.Pixboost.picture({apiKey: apiKey});
         _window.Pixboost.image({apiKey: apiKey});
         if (_window.lozad) {
-          var observer = _window.lozad(_window.document.querySelectorAll('[data-pb-lazy]'));
+          var observer = _window.lozad('[data-pb-lazy]', {
+            threshold: 0.1
+          });
           observer.observe();
         }
       };
