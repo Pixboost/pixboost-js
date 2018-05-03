@@ -99,9 +99,18 @@ _window.Pixboost = {
         _window.Pixboost.image({apiKey: apiKey});
         if (_window.lozad) {
           var observer = _window.lozad('[data-pb-lazy]', {
-            threshold: 0.1
+            threshold: 0.1,
+            loaded: function(el) {
+              if (_window.picturefill && typeof _window.picturefill === 'function') {
+                _window.picturefill();
+              }
+            }
           });
           observer.observe();
+        }
+        //Calling picture polyfill library
+        if (_window.picturefill && typeof _window.picturefill === 'function') {
+          _window.picturefill();
         }
       };
 
@@ -158,7 +167,6 @@ _window.Pixboost = {
     var doc = _window.document;
     var browser = _window.Pixboost._browser;
     var isIE9 = browser.name === 'MSIE' && browser.version === '9';
-    var isIE = browser.name === 'MSIE' || browser.name === 'IE'; //TODO: exclude EDGE
 
     options = options || {};
 
@@ -209,7 +217,7 @@ _window.Pixboost = {
         pic.appendChild(video);
       }
 
-      if(isLazy && !isIE) {
+      if(isLazy) {
         pic.setAttribute('data-pb-lazy', "");
       }
 
@@ -220,7 +228,7 @@ _window.Pixboost = {
           url = attrUrl || defaultUrl;
 
         if (isLast) {
-          if (isLazy && !isIE) {
+          if (isLazy) {
             pic.appendChild(createSource(bp.mediaQuery, url, attrOp));
           } else {
             pic.appendChild(createImage(url, attrOp, isIE9));
@@ -233,11 +241,6 @@ _window.Pixboost = {
       });
 
       el.parentNode.replaceChild(pic, el);
-    }
-
-    //Calling picture polyfill library
-    if (_window.picturefill && typeof _window.picturefill === 'function') {
-      _window.picturefill();
     }
   },
 
