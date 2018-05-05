@@ -62,6 +62,22 @@ _window.Pixboost = {
     return 'https://' + domain + '/api/2/img/' + src + '/' + op + (hasParams ? '&' : '?') + 'auth=' + apiKey;
   },
 
+  _lazyLoadHook: function() {
+    if (_window.lozad) {
+      var observer = _window.lozad('[data-pb-lazy]', {
+        threshold: 0.1,
+        loaded: function() {
+          _window.Pixboost._picturefillHook();
+        }
+      });
+      observer.observe();
+    }
+  },
+  _picturefillHook: function() {
+    if (_window.picturefill && typeof _window.picturefill === 'function') {
+      _window.picturefill();
+    }
+  },
   /**
    * This function is called on DOMContentLoaded event.
    *
@@ -97,21 +113,6 @@ _window.Pixboost = {
       var runUpdate = function(apiKey) {
         _window.Pixboost.picture({apiKey: apiKey});
         _window.Pixboost.image({apiKey: apiKey});
-        if (_window.lozad) {
-          var observer = _window.lozad('[data-pb-lazy]', {
-            threshold: 0.1,
-            loaded: function(el) {
-              if (_window.picturefill && typeof _window.picturefill === 'function') {
-                _window.picturefill();
-              }
-            }
-          });
-          observer.observe();
-        }
-        //Calling picture polyfill library
-        if (_window.picturefill && typeof _window.picturefill === 'function') {
-          _window.picturefill();
-        }
       };
 
       if (apiKey) {
@@ -242,6 +243,9 @@ _window.Pixboost = {
 
       el.parentNode.replaceChild(pic, el);
     }
+
+    self._lazyLoadHook();
+    self._picturefillHook();
   },
 
   /**
@@ -283,6 +287,8 @@ _window.Pixboost = {
         el.setAttribute('data-src', url);
       }
     }
+
+    self._lazyLoadHook();
   }
 };
 
