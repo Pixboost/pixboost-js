@@ -135,11 +135,11 @@ Call the `image()` function from the library if not using automatic replacement 
 
 Lazy loading will not load image until it will be in visible area (viewport).
 Pixboost.js supports lazy loading for both responsive and non responsive images. To enable
-lazy load you need to add `data-pb-lazy` attribute to `<div>` or `<img>` elements.
+lazy load you need to add `data-lazy` attribute to `<div>` or `<img>` elements.
 
 ```html
 <div data-pb-picture
-    data-pb-lazy
+    data-lazy
     data-url="https://yoursite.com/doggy.png"
     data-lg="optimise"
     data-md="resize?size=300"
@@ -147,7 +147,7 @@ lazy load you need to add `data-pb-lazy` attribute to `<div>` or `<img>` element
 ``` 
 
 ```html
-<img data-pb-image data-pb-lazy data-op="resize?size=x600" data-src="https://yoursite.com/doggy.png"/>
+<img data-pb-image data-lazy data-op="resize?size=x600" data-src="https://yoursite.com/doggy.png"/>
 ```
 
 Lazy loading in Pixboost.js implemented using 3rd party library [lozad.js](https://github.com/ApoorvSaxena/lozad.js).
