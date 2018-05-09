@@ -1,7 +1,7 @@
 {
   "name": "pixboost-js",
   "version": "1.1.4",
-  "description": "Library to integrate Pixbost service into web applications",
+  "description": "Library to integrate Pixboost service into web applications that are not using shadow DOM",
   "main": "pixboost.js",
   "scripts": {
     "test": "mocha ./test/*.spec.js",
