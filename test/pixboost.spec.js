@@ -51,27 +51,38 @@ describe('Pixboost JS', function () {
       [
         {
           name: 'md',
-          mediaQuery: '(min-width: 640px)',
-          srcset: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?auth=123&size=300'
+          mediaQuery: '(min-width: 640px)'
         },
         {
           name: 'lg',
           mediaQuery: '(min-width: 990px)',
-          srcset: 'https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123'
+        },
+        {
+          name: 'sm',
+          mediaQuery: ''
         }
       ].forEach((b) => {
-        it(`should generate <source> for ${b.name} breakpoint`, () => {
-          const source = global.window.document.querySelectorAll(`source[media="${b.mediaQuery}"]`);
-          assert.equal(source.length, 1);
-          assert.equal(source[0].getAttribute('srcset'), urls[b.name]);
-        });
+        if (urls[b.name]) {
+          it(`should generate <source> for ${b.name} breakpoint`, () => {
+            const source = global.window.document.querySelectorAll(`source[media="${b.mediaQuery}"]`);
+            assert.equal(source.length, 1);
+            assert.equal(source[0].getAttribute('srcset'), urls[b.name]);
+          });
+        }
       });
 
-      it('should contain <img> that points to the small breakpoint', () => {
-        const img = global.window.document.querySelectorAll(`img`);
-        assert.equal(img.length, 1);
-        assert.equal(img[0].getAttribute('src'), urls['img']);
-      });
+      if (urls.img) {
+        it('should contain <img> that points to the small breakpoint', () => {
+          const img = global.window.document.querySelectorAll(`img`);
+          assert.equal(img.length, 1);
+          assert.equal(img[0].getAttribute('src'), urls['img']);
+        });
+      } else {
+        it('should not have <img>', () => {
+          const img = global.window.document.querySelectorAll(`img`);
+          assert.equal(img.length, 0);
+        });
+      }
     };
 
     describe('when inserting <picture> tag manually', () => {
@@ -252,6 +263,22 @@ describe('Pixboost JS', function () {
         img: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
       });
     });
+
+
+    describe('when lazyload', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/picture/test-lazyload.html');
+
+        pixboost.picture({apiKey: '123', domain: 'static.doggy.com'});
+      });
+
+      //Here we don't have image, but have <source> with all breakpoints.
+      testCases({
+        lg: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123',
+        md: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123',
+        sm: 'https://static.doggy.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123'
+      }, true);
+    });
   });
 
   describe('image()', () => {
@@ -340,5 +367,33 @@ describe('Pixboost JS', function () {
         testCases('https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123');
     });
 
+    describe('when lazy load', () => {
+        const src = 'https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123';
+        beforeEach(async () => {
+            await setup('./test/fixtures/image/test-lazyload.html');
+
+            pixboost.image({apiKey: '123'});
+        });
+
+        it('should contain one img tag', () => {
+          const images = global.window.document.getElementsByTagName('img');
+          assert.equal(images.length, 1);
+        });
+
+        it('should has data-src attribute', () => {
+          const img = global.window.document.getElementsByTagName(`img`);
+          assert.equal(img[0].getAttribute('data-src'), src);
+        });
+
+        it('should not have src attribute', () => {
+          const img = global.window.document.getElementsByTagName(`img`);
+          assert.equal(img[0].hasAttribute('src'), false);
+        });
+
+        it('should not have data-pb-image attribute after replacement', () => {
+          const img = global.window.document.getElementsByTagName(`img`);
+          assert.equal(img[0].hasAttribute('data-pb-image'), false);
+        });
+    });
   });
 });

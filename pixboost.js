@@ -20,6 +20,14 @@ function getBrowser() {
   };
 }
 
+function hasAttribute(el, attr) {
+  if (el.hasAttribute) {
+    return el.hasAttribute(attr)
+  } else {
+    return !!(el.attributes[attr] && el.attributes[name].specified);
+  }
+}
+
 _window.Pixboost = {
   _BREAKPOINTS: [
     {
@@ -31,7 +39,8 @@ _window.Pixboost = {
       mediaQuery: '(min-width: 640px)'
     },
     {
-      name: 'sm'
+      name: 'sm',
+      mediaQuery: ''
     }
   ],
 
@@ -53,6 +62,22 @@ _window.Pixboost = {
     return 'https://' + domain + '/api/2/img/' + src + '/' + op + (hasParams ? '&' : '?') + 'auth=' + apiKey;
   },
 
+  _lazyLoadHook: function() {
+    if (_window.lozad) {
+      var observer = _window.lozad('[data-lazy]', {
+        threshold: 0.1,
+        loaded: function() {
+          _window.Pixboost._picturefillHook();
+        }
+      });
+      observer.observe();
+    }
+  },
+  _picturefillHook: function() {
+    if (_window.picturefill && typeof _window.picturefill === 'function') {
+      _window.picturefill();
+    }
+  },
   /**
    * This function is called on DOMContentLoaded event.
    *
@@ -182,6 +207,7 @@ _window.Pixboost = {
       var el = pbPictures[i];
       var attrPrefix = 'data-',
         defaultUrl = el.getAttribute(attrPrefix + 'url'),
+        isLazy = hasAttribute(el, attrPrefix + 'lazy'),
         pic = doc.createElement('picture');
 
       //Make <picture> work in IE9 - https://scottjehl.github.io/picturefill/#ie9
@@ -192,6 +218,10 @@ _window.Pixboost = {
         pic.appendChild(video);
       }
 
+      if(isLazy) {
+        pic.setAttribute('data-lazy', "");
+      }
+
       self._BREAKPOINTS.forEach(function (bp, idx) {
         var attrUrl = el.getAttribute(attrPrefix + bp.name + '-url'),
           attrOp = el.getAttribute(attrPrefix + bp.name),
@@ -199,7 +229,11 @@ _window.Pixboost = {
           url = attrUrl || defaultUrl;
 
         if (isLast) {
-          pic.appendChild(createImage(url, attrOp, isIE9));
+          if (isLazy) {
+            pic.appendChild(createSource(bp.mediaQuery, url, attrOp));
+          } else {
+            pic.appendChild(createImage(url, attrOp, isIE9));
+          }
         } else if (isIE9) {
           video.appendChild(createSource(bp.mediaQuery, url, attrOp));
         } else {
@@ -210,10 +244,8 @@ _window.Pixboost = {
       el.parentNode.replaceChild(pic, el);
     }
 
-    //Calling picture polyfill library
-    if (_window.picturefill && typeof _window.picturefill === 'function') {
-      _window.picturefill();
-    }
+    self._lazyLoadHook();
+    self._picturefillHook();
   },
 
   /**
@@ -244,18 +276,26 @@ _window.Pixboost = {
       var el = pbImages[i];
       var attrPrefix = 'data-',
         src = el.getAttribute(attrPrefix + 'src'),
-        op = el.getAttribute(attrPrefix + 'op');
+        op = el.getAttribute(attrPrefix + 'op'),
+        isLazy = hasAttribute(el, attrPrefix + 'lazy'),
+        url = self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled);
 
       el.removeAttribute('data-pb-image');
-      el.setAttribute('src', self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled));
+      if (!isLazy) {
+        el.setAttribute('src', url);
+      } else {
+        el.setAttribute('data-src', url);
+      }
     }
+
+    self._lazyLoadHook();
   }
 };
 
 if (typeof _window.document !== 'undefined') {
   if (_window.document.readyState === 'complete' ||
-      // !IE 8-10
-      (_window.document.readyState !== 'loading' && !_window.document.documentElement.doScroll)
+    // !IE 8-10
+    (_window.document.readyState !== 'loading' && !_window.document.documentElement.doScroll)
   ) {
     _window.Pixboost.init();
   } else {

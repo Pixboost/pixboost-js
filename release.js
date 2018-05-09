@@ -34,3 +34,7 @@ fs.mkdirSync(distDir);
 fs.writeFileSync(`${distDir}/pixboost.js`, code['pixboost.js']);
 fs.writeFileSync(`${distDir}/pixboost.min.js`, minified.code);
 fs.writeFileSync(`${distDir}/pixboost.js.map`, minified.map);
+
+fs.copyFileSync(`${__dirname}/vendor/intersection-observer.min.js`, `${distDir}/intersection-observer.min.js`);
+fs.copyFileSync(`${__dirname}/vendor/lozad.min.js`, `${distDir}/lozad.min.js`);
+fs.copyFileSync(`${__dirname}/vendor/picturefill.min.js`, `${distDir}/picturefill.min.js`);

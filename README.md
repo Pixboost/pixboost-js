@@ -4,7 +4,7 @@
 
 
 Javascript library to integrate [Pixboost](https://pixboost.com) into a web application that
-can directly access DOM, e.g. using JQuery, Backbone or other libraries.
+working directly on DOM tree (without shadow DOM), e.g. using JQuery, Backbone or other libraries.
 
 Table of Contents:
 
@@ -12,7 +12,9 @@ Table of Contents:
     * [Responsive images](#responsive-images)
         * [Operations](#operations)
         * [Supporting Breakpoints](#supporting-breakpoints)
+    * [Lazy Loading](#lazy-loading)
     * [Non-responsive images](#not-responsive-images)
+* [Configuration](#configuration)
     * [Replacing on document load](#replacing-on-document-load)
     * [Custom domain name](#custom-domain-name)
     * [Reloading](#reloading)
@@ -25,11 +27,27 @@ Table of Contents:
 
 ## Usage
 
-Add below code into your HTML page to include library:
+Add below code into your HTML page to include the library:
 
 ```html
-<script type="text/javascript" src="https://pixboost.com/libs/pixboost.js"></script> 
+<script type="text/javascript" src="https://pixboost.com/libs/pixboost.min.js"></script> 
 ```
+
+To support lazy loading and responsive images on all browsers you will need to include additional libraries and 
+polyfills:
+
+```html
+
+<!--Responsive images-->
+<script type="text/javascript" src="https://pixboost.com/libs/picturefill.min.js"></script>
+
+<!-- Lazy loading-->
+<script type="text/javascript" src="https://pixboost.com/libs/intersection-observer.min.js"></script>
+<script type="text/javascript" src="https://pixboost.com/libs/lozad.min.js"></script>
+
+<script type="text/javascript" src="https://pixboost.com/libs/pixboost.min.js"></script> 
+```
+
 
 ### Responsive images
 
@@ -54,7 +72,7 @@ when you run picture() function from the library:
     window.Pixboost.picture({apiKey: 'API_KEY'})
 ```
 
-then inserted `<picture>` tag will be:
+then `div` will be replaced with `<picture>` tag:
 
 ```html
 <picture>
@@ -105,14 +123,55 @@ If you have the same source image for all operations then you can specify defaul
 
 ### Not responsive images
 
-You can use library with `<img>` tag as well. Below is an example of image that will be replaced with optimised
-version:
+You can use library with `<img>` tag as well. Below is an example of image that will be replaced with resized version:
 
 ```html
 <img data-op="resize?size=x600" data-src="https://yoursite.com/doggy.png" data-pb-image/>
 ```
 
-Call the `image()` function from the library if not using automatic replacement (see below).
+Call the `image()` function from the library if not using automatic replacement (see Configuration section).
+
+### Lazy loading
+
+Lazy loading will not load image until it will be in visible area (viewport).
+Pixboost.js supports lazy loading for both responsive and non responsive images. To enable
+lazy load you need to add `data-lazy` attribute to `<div>` or `<img>` elements.
+
+```html
+<div data-pb-picture
+    data-lazy
+    data-url="https://yoursite.com/doggy.png"
+    data-lg="optimise"
+    data-md="resize?size=300"
+    data-sm="fit?size=100x100"/>
+``` 
+
+```html
+<img data-pb-image data-lazy data-op="resize?size=x600" data-src="https://yoursite.com/doggy.png"/>
+```
+
+Lazy loading in Pixboost.js implemented using 3rd party library [lozad.js](https://github.com/ApoorvSaxena/lozad.js).
+In order to make it work you'll need to add that library and also polyfill for [Intersection Observer](https://github.com/w3c/IntersectionObserver/) feature:
+
+```html
+    <script type="text/javascript" src="https://pixboost.com/libs/intersection-observer.min.js"></script>
+    <script type="text/javascript" src="https://pixboost.com/libs/lozad.min.js"></script>
+```
+
+## Configuration
+
+This is a short table of supported options that you can pass to `<script>` tag as attributes:
+
+| Option             | Description                                                                                    |
+|--------------------|------------------------------------------------------------------------------------------------|
+| data-api-key       | API key that will be used. If specified then no need to pass it manually to function calls     |
+| data-autoload      | If attribute presents then image() and picture() will be called automatically on document load |
+| data-events        | List of DOM events (separated by comma) that will trigger update once fired.                   |
+| data-jquery-events | Similar to above data-events options, but using jQuery events                                  |
+| data-domain        | The domain name in case you set up a custom domain name for your account.                      |
+| data-cookie-enable | Name of the cookie that will need to be set to value “true” for images to be optimized.        |
+| data-disabled      | Will disable Pixboost and use original images.                                                 |
+
 
 ### Replacing on document load
 
