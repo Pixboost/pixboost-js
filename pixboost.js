@@ -65,7 +65,8 @@ _window.Pixboost = {
   _lazyLoadHook: function() {
     if (_window.lozad) {
       var observer = _window.lozad('[data-lazy]', {
-        threshold: 0.1,
+        threshold: 0.01,
+        rootMargin: '40px 0px 0px 0px',
         loaded: function() {
           _window.Pixboost._picturefillHook();
         }
