@@ -63,9 +63,10 @@ _window.Pixboost = {
   },
 
   _lazyLoadHook: function() {
-    if (_window.lozad) {
+    if (_window.lozad && _window.IntersectionObserver) {
       var observer = _window.lozad('[data-lazy]', {
-        threshold: 0.1,
+        threshold: 0.01,
+        rootMargin: '40px 0px 0px 0px',
         loaded: function() {
           _window.Pixboost._picturefillHook();
         }
@@ -207,7 +208,7 @@ _window.Pixboost = {
       var el = pbPictures[i];
       var attrPrefix = 'data-',
         defaultUrl = el.getAttribute(attrPrefix + 'url'),
-        isLazy = hasAttribute(el, attrPrefix + 'lazy'),
+        isLazy = hasAttribute(el, attrPrefix + 'lazy') && _window.IntersectionObserver,
         pic = doc.createElement('picture');
 
       //Make <picture> work in IE9 - https://scottjehl.github.io/picturefill/#ie9
@@ -277,7 +278,7 @@ _window.Pixboost = {
       var attrPrefix = 'data-',
         src = el.getAttribute(attrPrefix + 'src'),
         op = el.getAttribute(attrPrefix + 'op'),
-        isLazy = hasAttribute(el, attrPrefix + 'lazy'),
+        isLazy = hasAttribute(el, attrPrefix + 'lazy') && _window.IntersectionObserver,
         url = self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled);
 
       el.removeAttribute('data-pb-image');

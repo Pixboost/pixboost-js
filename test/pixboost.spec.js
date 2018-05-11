@@ -36,6 +36,7 @@ describe('Pixboost JS', function () {
     const dom = await jsdom.JSDOM.fromFile(fixture, jsDomOptions);
     global.window.document = dom.window.document;
     global.window.navigator = dom.window.navigator;
+    global.window.IntersectionObserver = () => {};
     pixboost.init();
 
     return dom;

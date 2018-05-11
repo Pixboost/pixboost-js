@@ -150,13 +150,17 @@ lazy load you need to add `data-lazy` attribute to `<div>` or `<img>` elements.
 <img data-pb-image data-lazy data-op="resize?size=x600" data-src="https://yoursite.com/doggy.png"/>
 ```
 
-Lazy loading in Pixboost.js implemented using 3rd party library [lozad.js](https://github.com/ApoorvSaxena/lozad.js).
-In order to make it work you'll need to add that library and also polyfill for [Intersection Observer](https://github.com/w3c/IntersectionObserver/) feature:
+Lazy loading in Pixboost.js implemented by using 3rd party library [lozad.js](https://github.com/ApoorvSaxena/lozad.js).
+In order to make it work you'll need to add that library and also polyfill for [Intersection Observer](https://github.com/w3c/IntersectionObserver/) feature
+if you want to have support in all browsers:
 
 ```html
     <script type="text/javascript" src="https://pixboost.com/libs/intersection-observer.min.js"></script>
     <script type="text/javascript" src="https://pixboost.com/libs/lozad.min.js"></script>
 ```
+
+WARNING: In case of using polyfill make sure that you test your application on all browsers. We found some issues
+in IE (before Edge) and Safari with absolute positioning when using polyfill.
 
 ## Configuration
 
@@ -282,6 +286,11 @@ The library supports all major browsers including Chrome, Firefox, Safari and In
 Internet Explorer 9 requires polyfill for `<picture>` implementations. We are recommending to use
 [picturefill](http://scottjehl.github.io/picturefill/) version 3. Pixboost-js has integration with
 it and will call `window.picturefill()` once replacements are done. 
+
+Lazy loading is using [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) 
+feature that supports by all [major browsers](https://caniuse.com/#search=intersectionObserver) 
+except Safari. You can use polyfill, but make sure that you are doing thorough testing 
+(see more details in [lazy loading](#lazy-loading) section).
 
 ## Build
 
