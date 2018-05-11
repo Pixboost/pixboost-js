@@ -1,6 +1,6 @@
 {
   "name": "pixboost-js",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Library to integrate Pixboost service into web applications that are not using shadow DOM",
   "main": "pixboost.js",
   "scripts": {
