@@ -12,6 +12,7 @@ Table of Contents:
     * [Responsive images](#responsive-images)
         * [Operations](#operations)
         * [Supporting Breakpoints](#supporting-breakpoints)
+        * [Alt text](#alt-text)
     * [Lazy Loading](#lazy-loading)
     * [Non-responsive images](#not-responsive-images)
 * [Configuration](#configuration)
@@ -120,6 +121,19 @@ If you have the same source image for all operations then you can specify defaul
   `@media (min-width: 640px)`
 
 * _sm_ - Small devices - everything below tablets
+
+#### Alt text
+
+You can specify alt text for responsive images using `data-alt` attribute:
+
+```html
+<div data-pb-picture
+    data-alt="doggy"
+    data-url="https://yoursite.com/doggy.png"
+    data-lg="optimise"
+    data-md="resize?size=300"
+    data-sm="fit?size=100x100"/>
+```
 
 ### Not responsive images
 
