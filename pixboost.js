@@ -178,9 +178,12 @@ _window.Pixboost = {
     }
     var domain = options.domain || _window.Pixboost._domain || 'pixboost.com';
 
-    var createImage = function (url, op, isIE9) {
+    var createImage = function (url, op, isIE9, alt) {
       var imgEl = doc.createElement('img');
       imgEl.setAttribute('src', self._pixboostUrl(url, op, domain, apiKey, _window.Pixboost._disabled));
+      if (alt) {
+        imgEl.setAttribute('alt', alt);
+      }
 
       if (isIE9) {
         if (imgEl.hasAttribute('width')) {
@@ -209,6 +212,7 @@ _window.Pixboost = {
       var attrPrefix = 'data-',
         defaultUrl = el.getAttribute(attrPrefix + 'url'),
         isLazy = hasAttribute(el, attrPrefix + 'lazy') && _window.IntersectionObserver,
+        alt = el.getAttribute(attrPrefix + 'alt'),
         pic = doc.createElement('picture');
 
       //Make <picture> work in IE9 - https://scottjehl.github.io/picturefill/#ie9
@@ -221,6 +225,9 @@ _window.Pixboost = {
 
       if(isLazy) {
         pic.setAttribute('data-lazy', "");
+        if (alt) {
+          pic.setAttribute('data-alt', alt);
+        }
       }
 
       self._BREAKPOINTS.forEach(function (bp, idx) {
@@ -233,7 +240,7 @@ _window.Pixboost = {
           if (isLazy) {
             pic.appendChild(createSource(bp.mediaQuery, url, attrOp));
           } else {
-            pic.appendChild(createImage(url, attrOp, isIE9));
+            pic.appendChild(createImage(url, attrOp, isIE9, alt));
           }
         } else if (isIE9) {
           video.appendChild(createSource(bp.mediaQuery, url, attrOp));

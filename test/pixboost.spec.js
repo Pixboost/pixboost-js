@@ -78,10 +78,21 @@ describe('Pixboost JS', function () {
           assert.equal(img.length, 1);
           assert.equal(img[0].getAttribute('src'), urls['img']);
         });
+
+        it('should have <img> with alt attribute', () => {
+          const img = global.window.document.querySelectorAll(`img`);
+          assert.equal(img.length, 1);
+          assert.equal(img[0].getAttribute('alt'), 'Doggy');
+        });
       } else {
         it('should not have <img>', () => {
           const img = global.window.document.querySelectorAll(`img`);
           assert.equal(img.length, 0);
+        });
+
+        it('picture element should have data-alt attribute', () => {
+          const pic = global.window.document.querySelectorAll(`picture`);
+          assert.equal(pic[0].getAttribute('data-alt'), 'Doggy');
         });
       }
     };
