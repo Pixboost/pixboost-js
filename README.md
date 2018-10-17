@@ -28,31 +28,43 @@ Table of Contents:
 
 ## Usage
 
-Add below code into your HTML page to include the library:
+The easiest way to start using the library is to include it on the page and turn on autoload:
 
 ```html
-<script type="text/javascript" src="https://pixboost.com/libs/pixboost.min.js"></script> 
+<script 
+  type="text/javascript" 
+  src="https://pixboost.com/libs/pixboost.bundle.min.js"
+  id="pb-script"
+  data-api-key="<YOUR PIXBOOST API KEY>"
+  data-autoload=""
+></script> 
 ```
 
-To support lazy loading and responsive images on all browsers you will need to include additional libraries and 
-polyfills:
+pixboost.bundle.min.js script includes picturefill library that adds support of `<picture>` element to old browsers
+and lozad.js for lazy loading.
+
+autoload option will run picture() and image() functions (see below) on document load.
+
+Alternatively, you can include all components separately:
 
 ```html
-
 <!--Responsive images-->
 <script type="text/javascript" src="https://pixboost.com/libs/picturefill.min.js"></script>
 
 <!-- Lazy loading-->
-<script type="text/javascript" src="https://pixboost.com/libs/intersection-observer.min.js"></script>
 <script type="text/javascript" src="https://pixboost.com/libs/lozad.min.js"></script>
 
 <script type="text/javascript" src="https://pixboost.com/libs/pixboost.min.js"></script> 
 ```
 
+Library provides two main functions:
+* [picture()](#responsive-images) - to deal with responsive images.
+* [image()](#not-responsive-images) - to optimise all images that are device agnostic.
+
 
 ### Responsive images
 
-Library replaces all elements that marked with a data-pb-picture attribute with `<picture>` tag.
+Library replaces all elements that have `data-pb-picture` attribute with `<picture>` tag.
 Picture tag will include different sources (images) for different CSS breakpoints (screen sizes).
 
 For instance, for this element:
@@ -78,12 +90,10 @@ then `div` will be replaced with `<picture>` tag:
 ```html
 <picture>
     <source srcset="https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/optimise?auth=API_KEY" 
-        media="(min-width: 769px)">
+        media="(min-width: 990px)">
     <source srcset="https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=API_KEY" 
-        media="(max-width: 768px)">
-    <source srcset="https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/fit?size=100x100&auth=API_KEY" 
-        media="(max-width: 576px)">
-    <img src="https://yoursite.com/doggy.png"
+        media="(min-width: 640px)">
+    <img src="https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/fit?size=100x100&auth=API_KEY">
 </picture>
 ```
 
@@ -143,12 +153,16 @@ You can use library with `<img>` tag as well. Below is an example of image that 
 <img data-op="resize?size=x600" data-src="https://yoursite.com/doggy.png" data-pb-image/>
 ```
 
-Call the `image()` function from the library if not using automatic replacement (see Configuration section).
+To process all images:
+
+```js
+    window.Pixboost.image({apiKey: 'API_KEY'})
+```
 
 ### Lazy loading
 
-Lazy loading will not load image until it will be in visible area (viewport).
-Pixboost.js supports lazy loading for both responsive and non responsive images. To enable
+Lazy loading will not load image until it becomes visible to a user.
+Pixboost.js supports lazy loading for both responsive and non-responsive images. To enable
 lazy load you need to add `data-lazy` attribute to `<div>` or `<img>` elements.
 
 ```html
@@ -165,7 +179,8 @@ lazy load you need to add `data-lazy` attribute to `<div>` or `<img>` elements.
 ```
 
 Lazy loading in Pixboost.js implemented by using 3rd party library [lozad.js](https://github.com/ApoorvSaxena/lozad.js).
-In order to make it work you'll need to add that library and also polyfill for [Intersection Observer](https://github.com/w3c/IntersectionObserver/) feature
+In order to make it work, you'll need to use pixboost bundle (see [Usage](#usage) section) or add the library 
+with polyfill for the [Intersection Observer](https://github.com/w3c/IntersectionObserver/) feature
 if you want to have support in all browsers:
 
 ```html
@@ -173,7 +188,7 @@ if you want to have support in all browsers:
     <script type="text/javascript" src="https://pixboost.com/libs/lozad.min.js"></script>
 ```
 
-WARNING: In case of using polyfill make sure that you test your application on all browsers. We found some issues
+WARNING: In case of using polyfill make sure that you test your application in all browsers. We found some issues
 in IE (before Edge) and Safari with absolute positioning when using polyfill.
 
 ## Configuration
@@ -303,7 +318,7 @@ it and will call `window.picturefill()` once replacements are done.
 
 Lazy loading is using [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) 
 feature that supports by all [major browsers](https://caniuse.com/#search=intersectionObserver) 
-except Safari. You can use polyfill, but make sure that you are doing thorough testing 
+except for Safari. You can use polyfill, but make sure that you are doing thorough testing 
 (see more details in [lazy loading](#lazy-loading) section).
 
 ## Build
