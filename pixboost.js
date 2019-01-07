@@ -297,6 +297,31 @@ _window.Pixboost = {
     }
 
     self._lazyLoadHook();
+  },
+
+  background: function(options) {
+    var doc = _window.document;
+    var self = this;
+
+    options = options || {};
+
+    var apiKey = options.apiKey || _window.Pixboost._apiKey;
+    if (!apiKey) {
+      throw 'apiKey option is mandatory';
+    }
+    var domain = options.domain || _window.Pixboost._domain || 'pixboost.com';
+
+    var pbBackgrounds = doc.querySelectorAll('[data-pb-background]');
+
+    for (var i = 0; i < pbBackgrounds.length; i++) {
+      var el = pbBackgrounds[i];
+      var attrPrefix = 'data-',
+        src = el.getAttribute(attrPrefix + 'url'),
+        op = el.getAttribute(attrPrefix + 'op'),
+        url = self._pixboostUrl(src, op, domain, apiKey, _window.Pixboost._disabled);
+
+      el.style.backgroundImage = 'url(\'' + url + '\')';
+    }
   }
 };
 

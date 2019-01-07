@@ -408,4 +408,17 @@ describe('Pixboost JS', function () {
         });
     });
   });
+
+  describe('background', () => {
+    beforeEach(async () => {
+      await setup('./test/fixtures/background/test.html');
+
+      pixboost.background({apiKey: '123'});
+    });
+
+    it('should have background image style attribute', () => {
+      const div = global.window.document.getElementsByTagName(`div`);
+      assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/optimise?auth=123)`);
+    });
+  });
 });
