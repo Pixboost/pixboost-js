@@ -2,6 +2,7 @@
 
 const jsdom = require('jsdom');
 const assert = require('assert');
+const matchMediaPolyfill = require('mq-polyfill').default;
 
 describe('Pixboost JS', function () {
   let pixboost;
@@ -34,9 +35,23 @@ describe('Pixboost JS', function () {
     }
 
     const dom = await jsdom.JSDOM.fromFile(fixture, jsDomOptions);
+    global.window.Event = dom.window.Event;
+    global.window.dispatchEvent = dom.window.dispatchEvent;
+    global.window.addEventListener = dom.window.addEventListener;
+    global.window.screen = dom.window.screen;
     global.window.document = dom.window.document;
     global.window.navigator = dom.window.navigator;
     global.window.IntersectionObserver = () => {};
+    matchMediaPolyfill(global.window);
+
+    global.window.resizeTo = function(width, height) {
+      Object.assign(this, {
+        innerWidth: width,
+        innerHeight: height,
+        outerWidth: width,
+        outerHeight: height,
+      }).dispatchEvent(new this.Event('resize'));
+    };
     pixboost.init();
 
     return dom;
@@ -410,15 +425,146 @@ describe('Pixboost JS', function () {
   });
 
   describe('background', () => {
-    beforeEach(async () => {
-      await setup('./test/fixtures/background/test.html');
+    describe('simple', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/background/test.html');
 
-      pixboost.background({apiKey: '123'});
+        pixboost.background({apiKey: '123'});
+      });
+
+      it('should have background image style attribute', () => {
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/optimise?auth=123)`);
+      });
     });
 
-    it('should have background image style attribute', () => {
-      const div = global.window.document.getElementsByTagName(`div`);
-      assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/optimise?auth=123)`);
+    describe('responsive', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/background/test-responsive.html');
+      });
+
+      it('should set background image for desktop', () => {
+        global.window.resizeTo(1024, 768);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123)`);
+      });
+
+      it('should set background image for tablet', () => {
+        global.window.resizeTo(768, 1024);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy-md.png/resize?size=300&auth=123)`);
+      });
+
+      it('should set background image for mobile', () => {
+        global.window.resizeTo(500, 400);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy-sm.png/fit?size=100x100&auth=123)`);
+      });
+    });
+
+    describe('responsive with default url', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/background/test-responsive-default-url.html');
+      });
+
+      it('should set background image for desktop', () => {
+        global.window.resizeTo(1024, 768);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/optimise?auth=123)`);
+      });
+
+      it('should set background image for tablet', () => {
+        global.window.resizeTo(768, 1024);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/resize?size=300&auth=123)`);
+      });
+
+      it('should set background image for mobile', () => {
+        global.window.resizeTo(500, 400);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/fit?size=100x100&auth=123)`);
+      });
+    });
+
+    describe('when using hide operation', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/background/test-hide.html');
+      });
+
+      it('should set background image for desktop', () => {
+        global.window.resizeTo(1024, 768);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy.png/optimise?auth=123)`);
+      });
+
+      it('should hide image on tablet', () => {
+        global.window.resizeTo(768, 1024);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==)`);
+      });
+
+      it('should hide image on mobile', () => {
+        global.window.resizeTo(500, 400);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==)`);
+      });
+    });
+
+    describe('when using lazy loading', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/background/test-lazy.html');
+      });
+
+      it('should set background image for desktop', () => {
+        global.window.resizeTo(1024, 768);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].getAttribute('data-background-image'), `https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123`);
+      });
+    });
+
+    describe('when using lazy loading and background already loaded', () => {
+      beforeEach(async () => {
+        await setup('./test/fixtures/background/test-lazy-loaded.html');
+      });
+
+      it('should set background image for desktop', () => {
+        global.window.resizeTo(1024, 768);
+
+        pixboost.background({apiKey: '123'});
+
+        const div = global.window.document.getElementsByTagName(`div`);
+        assert.equal(div[0].style.backgroundImage, `url(https://pixboost.com/api/2/img/https://yoursite.com/doggy-lg.png/optimise?auth=123)`);
+      });
     });
   });
 });
