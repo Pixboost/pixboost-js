@@ -13,8 +13,9 @@ Table of Contents:
         * [Operations](#operations)
         * [Supporting Breakpoints](#supporting-breakpoints)
         * [Alt text](#alt-text)
-    * [Lazy Loading](#lazy-loading)
     * [Non-responsive images](#not-responsive-images)
+    * [CSS Background images](#css-background-images)
+    * [Lazy Loading](#lazy-loading)
 * [Configuration](#configuration)
     * [Replacing on document load](#replacing-on-document-load)
     * [Custom domain name](#custom-domain-name)
@@ -158,6 +159,55 @@ To process all images:
 ```js
     window.Pixboost.image({apiKey: 'API_KEY'})
 ```
+
+### CSS background images
+
+[Background images](https://css-tricks.com/almanac/properties/b/background-image/) are often used for hero banners or in 
+cases where you need to put content on top of an image.
+
+Below is a simple example of hero banner:
+
+```html
+<style>
+    .hero {
+        height: 600px;
+        background-image: url("https://yoursite.com/hero.jpg");
+        background-size: cover;
+    }
+</style>
+
+<div class="hero" >
+    <div class="content">This text is displayed on top of the image.</div>
+</div>
+```
+
+In this example we created hero banner and using "background-image" CSS rule to setup an URL for the image.
+
+Using this library you can optimise this image and also make it responsive. The syntax is exact the 
+same as for [responsive images](#responsive-images), but instead of using `data-pb-picture` attribute
+you should use `data-pb-background`:
+
+```html
+<style>
+    .hero {
+        height: 600px;
+        background-size: cover;
+    }
+</style>
+
+<div class="hero" 
+    data-pb-background=""
+    data-url="https://yoursite.com/hero.jpg"
+    data-lg="optimise"
+    data-md="resize?size=990"
+    data-sm="resize?size=640">
+
+    <div class="content">This text is displayed on top of the image.</div>
+</div>
+```
+
+The snippet above will render 3 different sizes for different devices. We don't need `background-image`
+CSS rule anymore as it will be added by the library. Lazy loading is supported for background images as well.
 
 ### Lazy loading
 
