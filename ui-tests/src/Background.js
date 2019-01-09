@@ -4,12 +4,14 @@ describe('Background', function() {
   it('simple', function () {
     return this.browser
       .url('http://localhost:8080/examples/bg-simple.html')
+      .pause(1000) //for Firefox
       .assertView('plain', '.js-app');
   });
 
   it('responsive', function() {
     return this.browser
       .url('http://localhost:8080/examples/bg-responsive.html')
+      .pause(1000) //for Firefox
       .assertView('plain', '.js-app');
   });
 
