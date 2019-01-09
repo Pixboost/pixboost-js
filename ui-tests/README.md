@@ -1,6 +1,6 @@
 # UI Tests
 
-Running react app that using pixboost-react library and running webdriver.io tests against it.
+Running webdriver.io tests against examples.
 
 ## How to run
 
