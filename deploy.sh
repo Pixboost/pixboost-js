@@ -9,7 +9,7 @@ if [[ ${BRANCH} -ne "master" ]]; then
     exit 1
 fi
 
-npm install
+npm ci
 npm test
 
 gsutil cp -a public-read -z js dist/* gs://pixboost-libs/new-libs/
