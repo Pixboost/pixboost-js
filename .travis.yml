@@ -1,6 +1,12 @@
 language: node_js
 node_js:
 - node
+jobs:
+  include:
+    - stage: test
+      script: npm run test
+    - stage: build
+      script: npm install
 deploy:
   provider: gcs
   access_key_id: GOOGCL2HPMKJON26YR6RN53I
