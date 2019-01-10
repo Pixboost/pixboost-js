@@ -4,7 +4,7 @@ set -e
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ ${BRANCH} ne "master" ]]; then
+if [[ ${BRANCH} -ne "master" ]]; then
     echo "You must be on the master branch to deploy"
     exit 1
 fi
