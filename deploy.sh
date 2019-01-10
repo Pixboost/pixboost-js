@@ -12,4 +12,4 @@ fi
 npm ci
 npm test
 
-gsutil cp -a public-read -z js dist/* gs://pixboost-libs/new-libs/
+gsutil -h "Cache-Control: max-age=86400,public" cp -a public-read -z js dist/* gs://pixboost-libs/new-libs/
