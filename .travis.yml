@@ -1,9 +1,13 @@
 language: node_js
 node_js:
-  - "node"
-before_install:
-  - export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
-  - echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-  - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-  - sudo apt-get update -q && sudo apt-get install -y google-cloud-sdk
-  - gsutil -v
+- node
+deploy:
+  provider: gcs
+  access_key_id: GOOGCL2HPMKJON26YR6RN53I
+  secret_access_key:
+    secure: he6+jJ0X3svXkofwd3DSInGso+Suq2zFzR5AegPeoXqJZQGXgD0GJqP8Wn2rWOzXw7gdwXkFwGimqpxi2PTymL1bWwKwNaXp6OGuDFxnBABKYD9hnPlJrThx0Y4NKS2+b1Pa0F1s3l20/uPWBc/ck0HmRWU/WQ27xFpuhXL3/aQwiO4tRZELtHLTLoSBIjRgGE+ISPpgsdZioU4B1mS6hL205228nh5o9m/avxZd8/P8lBdL5z9kDuIVkBgC2UoCeVdqk1LOP44Q5ehtgWipFNOeSu9EWsbPrftKyZY/9f+bWi2+grBHBes3reMoOpaFrDv41OoFH2/qnmWAs2rsy3UUWXUj7CVD/rngj3BeLTYeXd2HgdP0yRx3r+vER1FtjjTC58f2Ra/Knze/VMFswxQxTJsIuRWQyHofVTCToyDRm1W2yJgstyHDP40YxCoME8bDs/JK6tf/s/sHg/g4hXy/13bz5qrpvNqPR9Swqe+sjH6BJvOgb4ewUJzKveTTB75LGsDNLftrsYj1K7I3PdfSPhRDsdfbIWyc+JF0InSINI8RR/VfrIBL84BNLrsbOQ/WQicoElk4POclPc+uqSo3OJ4+md0qaILl1l4Lum8EBJcXOdxSzes9yR83S8oeA9TODlkBZHKEh7TPpVZrIa/un0DiYxTAOXmWzi5xVUQ=
+  bucket: pixboost-libs
+  local-dir: dist
+  on:
+    repo: Pixboost/pixboost-js
+    branch: feature/background
