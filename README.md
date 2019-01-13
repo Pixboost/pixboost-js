@@ -165,7 +165,7 @@ To process all images:
 [Background images](https://css-tricks.com/almanac/properties/b/background-image/) are often used for hero banners or in 
 cases where you need to put content on top of an image.
 
-Below is a simple example of hero banner:
+Below is a simple example of a hero banner:
 
 ```html
 <style>
@@ -181,9 +181,9 @@ Below is a simple example of hero banner:
 </div>
 ```
 
-In this example we created hero banner and using "background-image" CSS rule to setup an URL for the image.
+In this example, we created hero banner and using "background-image" CSS rule to setup an URL for the image.
 
-Using this library you can optimise this image and also make it responsive. The syntax is exact the 
+Using this library, you can optimise this image and also make it responsive. The syntax is exactly the 
 same as for [responsive images](#responsive-images), but instead of using `data-pb-picture` attribute
 you should use `data-pb-background`:
 
@@ -206,8 +206,8 @@ you should use `data-pb-background`:
 </div>
 ```
 
-The snippet above will render 3 different sizes for different devices. We don't need `background-image`
-CSS rule anymore as it will be added by the library. Lazy loading is supported for background images as well.
+The snippet above renders 3 different sizes for different devices. We don't need `background-image`
+CSS rule anymore as it created by the library. Lazy loading is supported for background images as well.
 
 ### Lazy loading
 
