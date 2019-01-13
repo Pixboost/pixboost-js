@@ -9,71 +9,38 @@ const src = fs.readFileSync(`${__dirname}/pixboost.js`).toString('utf-8');
 const lozadSrc = fs.readFileSync(`${__dirname}/vendor/lozad.min.js`).toString('utf-8');
 const picturefillSrc = fs.readFileSync(`${__dirname}/vendor/picturefill.js`).toString('utf-8');
 
+const uglify = (code, sourceMapFilename) => {
+  const minified = UglifyJS.minify(code, {
+    sourceMap: {
+      filename: sourceMapFilename,
+      url: `${sourceMapFilename}.map`
+    },
+    output: {
+      comments: 'some'
+    }
+  });
+  if (minified.error) {
+    console.error(`Couldn't minify code: ${minified.error}`);
+    process.exit(1);
+  }
+
+  return minified;
+};
+
 const code = {
   'pixboost.js': `/* @preserve ${version} */\n${src}`
 };
-const minified = UglifyJS.minify(code, {
-  sourceMap: {
-    filename: 'pixboost.js',
-    url: 'pixboost.js.map'
-  },
-  output: {
-    comments: 'some'
-  }
-});
-if (minified.error) {
-  console.error(`Couldn't minify code: ${minified.error}`);
-  process.exit(1);
-}
 
-const minifiedWithVersion = UglifyJS.minify(code, {
-  sourceMap: {
-    filename: `pixboost-${version}.js`,
-    url: `pixboost-${version}.js.map`
-  },
-  output: {
-    comments: 'some'
-  }
-});
-if (minifiedWithVersion.error) {
-  console.error(`Couldn't minify code: ${minifiedWithVersion.error}`);
-  process.exit(3);
-}
+const minified = uglify(code, 'pixboost.js');
+const minifiedWithVersion = uglify(code, `pixboost-${version}.js`);
 
 const bundleCode = {
   'picturefill.js': picturefillSrc,
   'lozad.js': lozadSrc,
   'pixboost.js': `/* @preserve ${version} */\n${src}`,
 };
-const bundleMinified = UglifyJS.minify(bundleCode, {
-  sourceMap: {
-    filename: 'pixboost.bundle.js',
-    url: 'pixboost.bundle.js.map'
-  },
-  output: {
-    comments: 'some'
-  }
-});
-
-if (bundleMinified.error) {
-  console.error(`Couldn't minify code: ${bundleMinified.error}`);
-  process.exit(2);
-}
-
-const bundleMinifiedWithVersion = UglifyJS.minify(bundleCode, {
-  sourceMap: {
-    filename: `pixboost-${version}.bundle.js`,
-    url: `pixboost-${version}.bundle.js.map`
-  },
-  output: {
-    comments: 'some'
-  }
-});
-
-if (bundleMinifiedWithVersion.error) {
-  console.error(`Couldn't minify code: ${bundleMinifiedWithVersion.error}`);
-  process.exit(4);
-}
+const bundleMinified = uglify(bundleCode, 'pixboost.bundle.js');
+const bundleMinifiedWithVersion = uglify(bundleCode, `pixboost-${version}.bundle.js`);
 
 const distDir = `${__dirname}/dist`;
 if (fs.existsSync(distDir)) {
