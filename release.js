@@ -8,6 +8,7 @@ const version = require('./package.json').version;
 const src = fs.readFileSync(`${__dirname}/pixboost.js`).toString('utf-8');
 const lozadSrc = fs.readFileSync(`${__dirname}/vendor/lozad.min.js`).toString('utf-8');
 const picturefillSrc = fs.readFileSync(`${__dirname}/vendor/picturefill.js`).toString('utf-8');
+const matchMediaSrc = fs.readFileSync(`${__dirname}/vendor/matchMedia.min.js`).toString('utf-8');
 
 const uglify = (code, sourceMapFilename) => {
   const minified = UglifyJS.minify(code, {
@@ -37,6 +38,7 @@ const minifiedWithVersion = uglify(code, `pixboost-${version}.js`);
 const bundleCode = {
   'picturefill.js': picturefillSrc,
   'lozad.js': lozadSrc,
+  'matchMedia.js': matchMediaSrc,
   'pixboost.js': `/* @preserve ${version} */\n${src}`,
 };
 const bundleMinified = uglify(bundleCode, 'pixboost.bundle.js');
@@ -68,3 +70,5 @@ fs.copyFileSync(`${__dirname}/vendor/lozad.min.js`, `${distDir}/lozad.min.js`);
 fs.copyFileSync(`${__dirname}/vendor/lozad.js`, `${distDir}/lozad.js`);
 fs.copyFileSync(`${__dirname}/vendor/picturefill.min.js`, `${distDir}/picturefill.min.js`);
 fs.copyFileSync(`${__dirname}/vendor/picturefill.js`, `${distDir}/picturefill.js`);
+fs.copyFileSync(`${__dirname}/vendor/matchMedia.min.js`, `${distDir}/matchMedia.min.js`);
+fs.copyFileSync(`${__dirname}/vendor/matchMedia.js`, `${distDir}/matchMedia.js`);
