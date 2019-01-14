@@ -13,8 +13,9 @@ Table of Contents:
         * [Operations](#operations)
         * [Supporting Breakpoints](#supporting-breakpoints)
         * [Alt text](#alt-text)
-    * [Lazy Loading](#lazy-loading)
     * [Non-responsive images](#not-responsive-images)
+    * [CSS Background images](#css-background-images)
+    * [Lazy Loading](#lazy-loading)
 * [Configuration](#configuration)
     * [Replacing on document load](#replacing-on-document-load)
     * [Custom domain name](#custom-domain-name)
@@ -40,10 +41,10 @@ The easiest way to start using the library is to include it on the page and turn
 ></script> 
 ```
 
-pixboost.bundle.min.js script includes picturefill library that adds support of `<picture>` element to old browsers
-and lozad.js for lazy loading.
+pixboost.bundle.min.js script includes picturefill library that adds support of `<picture>` element to old browsers,
+lozad.js for lazy loading and matchMedia.js for supporting matchMedia() call in IE9.
 
-autoload option will run picture() and image() functions (see below) on document load.
+autoload option will run `picture()`, `image()` and `background()` functions (see below) on document load.
 
 Alternatively, you can include all components separately:
 
@@ -54,12 +55,16 @@ Alternatively, you can include all components separately:
 <!-- Lazy loading-->
 <script type="text/javascript" src="https://pixboost.com/libs/lozad.min.js"></script>
 
+<!-- Match media-->
+<script type="text/javascript" src="https://pixboost.com/libs/matchMedia.min.js"></script>
+
 <script type="text/javascript" src="https://pixboost.com/libs/pixboost.min.js"></script> 
 ```
 
-Library provides two main functions:
+Library provides three main functions:
 * [picture()](#responsive-images) - to deal with responsive images.
 * [image()](#not-responsive-images) - to optimise all images that are device agnostic.
+* [background()](#css-background-images) - for images that using CSS background
 
 
 ### Responsive images
@@ -158,6 +163,63 @@ To process all images:
 ```js
     window.Pixboost.image({apiKey: 'API_KEY'})
 ```
+
+### CSS background images
+
+[Background images](https://css-tricks.com/almanac/properties/b/background-image/) are often used for hero banners or in 
+cases where you need to put content on top of an image.
+
+Below is a simple example of a hero banner:
+
+```html
+<style>
+    .hero {
+        height: 600px;
+        background-image: url("https://yoursite.com/hero.jpg");
+        background-size: cover;
+    }
+</style>
+
+<div class="hero" >
+    <div class="content">This text is displayed on top of the image.</div>
+</div>
+```
+
+In this example, we created hero banner and using "background-image" CSS rule to setup an URL for the image.
+
+Using this library, you can optimise this image and also make it responsive. The syntax is exactly the 
+same as for [responsive images](#responsive-images), but instead of using `data-pb-picture` attribute
+you should use `data-pb-background`:
+
+```html
+<style>
+    .hero {
+        height: 600px;
+        background-size: cover;
+    }
+</style>
+
+<div class="hero" 
+    data-pb-background=""
+    data-url="https://yoursite.com/hero.jpg"
+    data-lg="optimise"
+    data-md="resize?size=990"
+    data-sm="resize?size=640">
+
+    <div class="content">This text is displayed on top of the image.</div>
+</div>
+```
+
+The snippet above renders 3 different sizes for different devices. We don't need `background-image`
+CSS rule anymore as it created by the library. 
+
+You can kick off optimisation by calling `background()` function or use [autoload](#replacing-on-document-load):
+
+```
+window.Pixboost.background({apiKey: 'API_KEY'})
+```
+
+Lazy loading is supported for background images as well.
 
 ### Lazy loading
 
@@ -312,9 +374,11 @@ Value of the cookie must be set to `true`.
 ## Browsers Support
 
 The library supports all major browsers including Chrome, Firefox, Safari and Internet Explorer.
-Internet Explorer 9 requires polyfill for `<picture>` implementations. We are recommending to use
+Internet Explorer 9 requires polyfill for `<picture>` and `matchMedia` implementations. 
+For picture support, we are recommending to use
 [picturefill](http://scottjehl.github.io/picturefill/) version 3. Pixboost-js has integration with
-it and will call `window.picturefill()` once replacements are done. 
+it and will call `window.picturefill()` once replacements are done. For matchMedia, we highly recommend
+[matchMedia.js](https://github.com/paulirish/matchMedia.js).
 
 Lazy loading is using [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) 
 feature that supports by all [major browsers](https://caniuse.com/#search=intersectionObserver) 

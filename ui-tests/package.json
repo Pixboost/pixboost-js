@@ -1,0 +1,22 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "install": "selenium-standalone install",
+    "start-selenium": "selenium-standalone start",
+    "chrome-only": "hermione --set chrome",
+    "update": "hermione --update-refs",
+    "test": "hermione",
+    "gui": "hermione gui"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "gemini": "^6.0.0",
+    "hermione": "^1.0.0",
+    "html-reporter": "^3.0.2",
+    "selenium-standalone": "^6.15.4"
+  }
+}

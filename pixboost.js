@@ -114,6 +114,7 @@ _window.Pixboost = {
       var runUpdate = function(apiKey) {
         _window.Pixboost.picture({apiKey: apiKey});
         _window.Pixboost.image({apiKey: apiKey});
+        _window.Pixboost.background({apiKey: apiKey});
       };
 
       if (apiKey) {
@@ -154,6 +155,10 @@ _window.Pixboost = {
           _window.$(document).on($eventsList[i], onEvent);
         }
       }
+
+      _window.addEventListener('orientationchange', function () {
+        _window.Pixboost.background();
+      });
     }
   },
 
@@ -297,6 +302,59 @@ _window.Pixboost = {
     }
 
     self._lazyLoadHook();
+  },
+
+  background: function(options) {
+    var doc = _window.document;
+    var self = this;
+
+    options = options || {};
+
+    var apiKey = options.apiKey || _window.Pixboost._apiKey;
+    if (!apiKey) {
+      throw 'apiKey option is mandatory';
+    }
+    var domain = options.domain || _window.Pixboost._domain || 'pixboost.com';
+
+    var pbBackgrounds = doc.querySelectorAll('[data-pb-background]');
+
+    for (var i = 0; i < pbBackgrounds.length; i++) {
+      var el = pbBackgrounds[i];
+      var attrPrefix = 'data-',
+        defaultUrl = el.getAttribute(attrPrefix + 'url'),
+        defaultOp = el.getAttribute(attrPrefix + 'op'),
+        isLazy = hasAttribute(el, attrPrefix + 'lazy') && _window.IntersectionObserver,
+        isLoaded = hasAttribute(el, attrPrefix + 'loaded');
+
+      var op = defaultOp;
+      var url = defaultUrl;
+      if (!defaultUrl || !defaultOp) {
+        var activeBreakpoint = self._BREAKPOINTS[2]; //Small by default
+        for (var bpidx = 0; bpidx < self._BREAKPOINTS.length; bpidx++) {
+          var bp = self._BREAKPOINTS[bpidx];
+          if (bp.mediaQuery && _window.matchMedia(bp.mediaQuery).matches) {
+            activeBreakpoint = bp;
+            break;
+          }
+        }
+
+        var bpUrl = el.getAttribute(attrPrefix + activeBreakpoint.name + '-url'),
+          bpOp = el.getAttribute(attrPrefix + activeBreakpoint.name);
+
+        url = bpUrl || url;
+        op = bpOp || op;
+      }
+
+      var pixboostUrl = self._pixboostUrl(url, op, domain, apiKey, _window.Pixboost._disabled);
+
+      if (isLazy && !isLoaded) {
+        el.setAttribute('data-background-image', pixboostUrl);
+      } else {
+        el.style.backgroundImage = 'url(\'' + pixboostUrl + '\')';
+      }
+    }
+
+    self._lazyLoadHook()
   }
 };
 

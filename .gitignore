@@ -1,3 +1,4 @@
 dist/
 *.iml
+ui-tests/hermione/reports/
 .idea/
