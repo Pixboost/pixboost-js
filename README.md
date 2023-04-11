@@ -1,3 +1,5 @@
+# ⚠️⚠️⚠️⚠️⚠️ THIS REPOSITORY IS ARCHIVED SINCE ALL POPULAR BROWSERS SUPPORT NATIVE LAZY LOADING AND THERE IS NO NEED TO LOAD ADDITIONAL JAVASCRIPT ⚠️⚠️⚠️⚠️⚠️ 
+
 # pixboost-js
 
 [![Build Status](https://travis-ci.org/Pixboost/pixboost-js.svg?branch=master)](https://travis-ci.org/Pixboost/pixboost-js)
